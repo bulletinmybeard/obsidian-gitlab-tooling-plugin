@@ -34,15 +34,11 @@ export class CacheManager extends BaseClass {
 	 * Saves a value to the cache.
 	 * @param {string} cacheKey
 	 * @param {any} data
-	 * @return {Promise<void>}
+	 * @return {void}
 	 */
 	set(cacheKey: string, data: any): void {
 		const cacheEntry = { data, timestamp: Date.now() }
 		try {
-			// await this.app.vault.adapter.write(
-			// 	this.cachePath(cacheKey),
-			// 	JSON.stringify(cacheEntry)
-			// )
 			fs.writeFileSync(this.cachePath(cacheKey), JSON.stringify(cacheEntry), { encoding: 'utf-8' })
 		} catch (err) {
 			this.logger.error(`${this.pluginId} error setting cache key:`, err)
@@ -52,13 +48,10 @@ export class CacheManager extends BaseClass {
 	/**
 	 * Retrieves a value from the cache.
 	 * @param {string} cacheKey
-	 * @return {Promise<any>}
+	 * @return {any}
 	 */
 	get(cacheKey: string): any {
 		try {
-			// const cacheEntry = JSON.parse(
-			// 	await this.app.vault.adapter.read(this.cachePath(cacheKey))
-			// )
 			const cacheEntry = JSON.parse(fs.readFileSync(this.cachePath(cacheKey), { encoding: 'utf-8' }))
 			return this.isCacheValid(
 				cacheEntry.data,
@@ -73,11 +66,10 @@ export class CacheManager extends BaseClass {
 	/**
      * Removes a value from the cache.
      * @param {string} cacheKey
-	 * @return {Promise<void>}
+	 * @return {void}
      */
 	remove(cacheKey: string): void {
 		try {
-			// await this.app.vault.adapter.remove(this.cachePath(cacheKey))
 			fs.unlinkSync(this.cachePath(cacheKey))
 		} catch (err) {
 			this.logger.error(`${this.pluginId} error removing cache key:`, err)
@@ -88,10 +80,8 @@ export class CacheManager extends BaseClass {
 	 * Creates the cache directory inside this plugin directory.
 	 */
 	ensureDirectoryExists(): void {
-		// if (!(await this.app.vault.adapter.exists(this.cacheDirectory))) {
 		if (!(fs.existsSync(this.cacheDirectory))) {
 			try {
-				// await this.app.vault.adapter.mkdir(this.cacheDirectory)
 				fs.mkdirSync(this.cacheDirectory, { recursive: true })
 				this.logger.info(`'${this.pluginId}' cache directory successfully created.`)
 			} catch (err) {
@@ -130,12 +120,6 @@ export class CacheManager extends BaseClass {
 		return path.resolve(this.cacheDirectory, cacheKey)
 	}
 
-	// isCacheValid(data: any, timestamp: number): boolean {
-	// 	if (!data || !timestamp) {
-	// 		return false
-	// 	}
-	// 	return (Date.now() - timestamp) < this.cacheExpirationMs
-	// }
 	isCacheValid(data: any, timestamp: number): boolean {
 		if (!data || !timestamp) {
 			return false

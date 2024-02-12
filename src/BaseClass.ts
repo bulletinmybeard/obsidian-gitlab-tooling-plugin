@@ -16,7 +16,6 @@ export class BaseClass {
 		logEnabled: true,
 	}
 
-	// constructor(options: Partial<BaseClassOptions> = {}) {
 	constructor(options: any = {}) {
 		this.options = deepMerge(this.options, options)
 
