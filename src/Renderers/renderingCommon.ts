@@ -123,7 +123,7 @@ export default {
 			pipelines = sortArray(limitArrayItems(apiData.pipelines), 'updated_at')
 				.reduce((acc: any[], pipeline: any) => {
 					let htmlString = `<a href="${pipeline['web_url']}" target="_blank">${pipeline['ref']}</a><br>` +
-						`<span>Last update: ${getElapsedTime(pipeline['updated_at'])}</span>`
+						`<span>Pipeline ran: ${getElapsedTime(pipeline['updated_at'])}</span>`
 
 					if (!plugin.settings['compactMode']) {
 						htmlString +=
@@ -165,19 +165,16 @@ export default {
 			},
 			{
 				header: 'Open Merge Requests',
-				content: '.',
 				list: mergeRequests,
 				key: 'merge-requests',
 			},
 			{
 				header: 'Pipelines',
-				content: '.',
 				list: pipelines,
 				key: 'pipelines',
 			},
 			{
 				header: 'Branches',
-				content: '.',
 				list: branches,
 				key: 'branches',
 			},
