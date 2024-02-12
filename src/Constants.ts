@@ -32,3 +32,9 @@ export const VALID_EXCLUDES: string[] = [
 	'merge-requests',
 	'branches'
 ]
+
+export const GIT_REST_API_COMPONENTS: any = {
+	PIPELINES: 'pipelines',
+	MERGE_REQUESTS: 'merge-requests',
+	BRANCHES: 'branches',
+}

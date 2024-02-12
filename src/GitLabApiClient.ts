@@ -1,7 +1,9 @@
 import { requestUrl, Notice, Plugin, RequestUrlResponse } from 'obsidian'
+
 import { BaseClass } from './BaseClass'
 import { CacheManager } from './CacheManager'
 import { slugifyString } from './Utils'
+import { GIT_REST_API_COMPONENTS } from './Constants'
 
 interface IPlugin extends Plugin {
 	settings: GitLabToolingPluginSettings;
@@ -60,15 +62,15 @@ export class GitLabApiClient extends BaseClass {
 	}
 
 	async getPipelines(sourceInfo: any): Promise<any> {
-		return this.request(sourceInfo, 'pipelines')
+		return this.request(sourceInfo, GIT_REST_API_COMPONENTS.PIPELINES)
 	}
 
 	async getLatestPipeline(sourceInfo: any): Promise<any> {
-		return this.request(sourceInfo, 'pipelines/latest')
+		return this.request(sourceInfo, GIT_REST_API_COMPONENTS.PIPELINES + '/latest')
 	}
 
 	async getMergeRequests(sourceInfo: any): Promise<any> {
-		return this.request(sourceInfo, 'merge_requests?state=opened')
+		return this.request(sourceInfo, GIT_REST_API_COMPONENTS.MERGE_REQUESTS + '?state=opened')
 	}
 
 	async getRepoInfo(sourceInfo: any): Promise<any> {
@@ -76,7 +78,7 @@ export class GitLabApiClient extends BaseClass {
 	}
 
 	async getBranches(sourceInfo: any): Promise<any> {
-		return this.request(sourceInfo, 'repository/branches?order_by=updated_at')
+		return this.request(sourceInfo, `repository/${GIT_REST_API_COMPONENTS.BRANCHES}?order_by=updated_at`)
 	}
 
 	async fetchGitLabData(item: { sourceInfo: any, exclude: string[] }): Promise<any> {
@@ -97,23 +99,22 @@ export class GitLabApiClient extends BaseClass {
 
 		// TODO: Check first whether the repository exists before proceeding with other REST API requests.
 
-		if (!item.exclude.includes('pipelines')) {
+		if (!item.exclude.includes(GIT_REST_API_COMPONENTS.PIPELINES)) {
 			promises.push(this.getPipelines(item.sourceInfo).then(data => fetchedData['pipelines'] = data))
 		}
 
-		if (!item.exclude.includes('merge-requests')) {
+		if (!item.exclude.includes(GIT_REST_API_COMPONENTS.MERGE_REQUESTS)) {
 			promises.push(this.getMergeRequests(item.sourceInfo).then(data => fetchedData['mergeRequests'] = data))
 		}
 
-		if (!item.exclude.includes('branches')) {
+		if (!item.exclude.includes(GIT_REST_API_COMPONENTS.BRANCHES)) {
 			promises.push(this.getBranches(item.sourceInfo).then(data => fetchedData['branches'] = data))
 		}
 
 		await Promise
 			.all(promises)
-			.then(() => {
-				setTimeout(() => notice.hide(), 2000)
-			})
+
+		setTimeout(() => notice.hide(), 2000)
 
 		return fetchedData
 	}
