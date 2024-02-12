@@ -24,15 +24,15 @@
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"@types/node": "^16.11.6",
-		"@typescript-eslint/eslint-plugin": "5.29.0",
-		"@typescript-eslint/parser": "5.29.0",
+		"@types/node": "^20.11.17",
+		"@typescript-eslint/eslint-plugin": "6.21.0",
+		"@typescript-eslint/parser": "6.21.0",
 		"badge-maker": "^3.3.1",
 		"builtin-modules": "3.3.0",
-		"esbuild": "0.17.3",
-		"obsidian": "latest",
+		"esbuild": "0.20.0",
+		"obsidian": "1.4.11",
 		"sass": "^1.70.0",
-		"tslib": "2.4.0",
-		"typescript": "4.7.4"
+		"tslib": "2.6.2",
+		"typescript": "5.3.3"
 	}
 }
