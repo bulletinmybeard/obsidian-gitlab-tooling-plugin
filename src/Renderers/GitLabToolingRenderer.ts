@@ -7,15 +7,9 @@ import { parseMarkdownBlock, slugifyString } from '../Utils'
 
 const updateRenderComponents = async (
 	parentEl: HTMLElement,
-	items: Record<string, HTMLElement>,
-	source: string
+	items: Record<string, HTMLElement>
 ): Promise<void> => {
 	parentEl.replaceChildren(RC.renderContainer(Object.values(items)))
-	// if (!Object.isEmpty(items)) {
-	// 	parentEl.replaceChildren(RC.renderContainer(Object.values(items)))
-	// } else {
-	// 	parentEl.replaceChildren(RC.renderContainer([await renderInvalidGitRepository(source)]))
-	// }
 }
 
 const renderInvalidGitRepository = async (source: string): Promise<HTMLElement> => {
@@ -44,5 +38,5 @@ export const GitLabToolingRenderer = async (
 		renderedItems[slugifyString(source)] = await renderInvalidGitRepository(source)
 	}
 
-	await updateRenderComponents(el, renderedItems, source)
+	await updateRenderComponents(el, renderedItems)
 }
