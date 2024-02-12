@@ -1,11 +1,13 @@
 interface GitLabToolingPluginSettings {
-	mySetting: string
-	gitlabUrl: string
-	gitlabToken: string
-	showIcon: boolean
-	purgeIssues: boolean
-	enableDebugLogging: boolean
-	openMergeRequestsOnly: boolean
+	gitlabUrl: string;
+	gitlabToken: string;
+	openMergeRequestsOnly: boolean;
+	compactInfoCard: boolean;
+	compactMode: boolean;
+	enableDebugLogging: boolean;
+	enableAutoPolling: boolean;
+	autoPollingInterval: string;
+	cacheRestApiResponses: boolean;
 	gitlabApiUrl: () => string
 }
 
