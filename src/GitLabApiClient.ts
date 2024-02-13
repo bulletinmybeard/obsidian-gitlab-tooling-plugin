@@ -19,7 +19,7 @@ export class GitLabApiClient extends BaseClass {
 		this.cache = new CacheManager(plugin.app, plugin.manifest.id)
 	}
 
-	private async request(sourceInfo: any, endpoint: string = ''): Promise<any> {
+	private async request(sourceInfo: any, endpoint: string = '', method: string = 'GET'): Promise<any> {
 
 		const url = `${sourceInfo.apiRepoUrl}/${endpoint}`
 		const cacheKey = slugifyString(url)
@@ -34,8 +34,8 @@ export class GitLabApiClient extends BaseClass {
 
 		try {
 			const response: RequestUrlResponse = await requestUrl({
-				url: url,
-				method: 'GET',
+				url,
+				method,
 				headers: {
 					'Content-Type': 'application/json',
 					'PRIVATE-TOKEN': this.plugin.settings.gitlabToken,
@@ -61,24 +61,36 @@ export class GitLabApiClient extends BaseClass {
 		}
 	}
 
-	async getPipelines(sourceInfo: any): Promise<any> {
-		return this.request(sourceInfo, GIT_REST_API_COMPONENTS.PIPELINES)
+	async getProjectPipelines(sourceInfo: any): Promise<any> {
+		return this.request(sourceInfo, 'pipelines')
 	}
 
-	async getLatestPipeline(sourceInfo: any): Promise<any> {
-		return this.request(sourceInfo, GIT_REST_API_COMPONENTS.PIPELINES + '/latest')
+	async retryProjectPipeline(sourceInfo: any, pipelineId: number): Promise<any> {
+		return this.request(sourceInfo, `pipelines/${pipelineId}/retry`, 'POST')
 	}
 
-	async getMergeRequests(sourceInfo: any): Promise<any> {
-		return this.request(sourceInfo, GIT_REST_API_COMPONENTS.MERGE_REQUESTS + '?state=opened')
+	async getOpenMergeRequests(sourceInfo: any): Promise<any> {
+		return this.request(sourceInfo, 'merge_requests?state=opened')
 	}
 
-	async getRepoInfo(sourceInfo: any): Promise<any> {
+	async getOpenMergeRequestDiscussions(sourceInfo: any, mergeRequestIID: number): Promise<any> {
+		return this.request(sourceInfo, `merge_requests/${mergeRequestIID}/discussions?order_by=updated_at`)
+	}
+
+	async getProjectDetails(sourceInfo: any): Promise<any> {
 		return this.request(sourceInfo)
 	}
 
 	async getBranches(sourceInfo: any): Promise<any> {
-		return this.request(sourceInfo, `repository/${GIT_REST_API_COMPONENTS.BRANCHES}?order_by=updated_at`)
+		return this.request(sourceInfo, `repository/branches?order_by=updated_at`)
+	}
+
+	async getReleases(sourceInfo: any): Promise<any> {
+		return this.request(sourceInfo, 'releases')
+	}
+
+	async getRepositoryTags(sourceInfo: any): Promise<any> {
+		return this.request(sourceInfo, 'repository/tags')
 	}
 
 	async fetchGitLabData(item: { sourceInfo: any, exclude: string[] }): Promise<any> {
@@ -88,33 +100,59 @@ export class GitLabApiClient extends BaseClass {
 			`Retrieving data for '${item.sourceInfo.repoSlug}' from GitLab`, 0)
 
 		const fetchedData: any = {
+			repo: {},
 			branches: [],
 			mergeRequests: [],
+			mergeRequestDiscussions: [],
 			pipelines: [],
-			repo: {},
+			releases: [],
+			tags: [],
 		}
 		const promises: any[] = []
 
-		promises.push(this.getRepoInfo(item.sourceInfo).then(data => fetchedData['repo'] = data))
+		promises.push(this.getProjectDetails(item.sourceInfo).then(data => fetchedData['repo'] = data))
 
 		// TODO: Check first whether the repository exists before proceeding with other REST API requests.
 
-		if (!item.exclude.includes(GIT_REST_API_COMPONENTS.PIPELINES)) {
-			promises.push(this.getPipelines(item.sourceInfo).then(data => fetchedData['pipelines'] = data))
+		if (!item.exclude.includes('pipelines')) {
+			promises.push(this.getProjectPipelines(item.sourceInfo).then(data => fetchedData['pipelines'] = data))
 		}
 
-		if (!item.exclude.includes(GIT_REST_API_COMPONENTS.MERGE_REQUESTS)) {
-			promises.push(this.getMergeRequests(item.sourceInfo).then(data => fetchedData['mergeRequests'] = data))
+		if (!item.exclude.includes('merge-requests')) {
+			promises.push(this.getOpenMergeRequests(item.sourceInfo).then(data => fetchedData['mergeRequests'] = data))
 		}
 
-		if (!item.exclude.includes(GIT_REST_API_COMPONENTS.BRANCHES)) {
+		if (!item.exclude.includes('branches')) {
 			promises.push(this.getBranches(item.sourceInfo).then(data => fetchedData['branches'] = data))
+		}
+
+		if (!item.exclude.includes('releases')) {
+			promises.push(this.getReleases(item.sourceInfo).then(data => fetchedData['releases'] = data))
+		}
+
+		if (!item.exclude.includes('tags')) {
+			promises.push(this.getRepositoryTags(item.sourceInfo).then(data => fetchedData['tags'] = data))
 		}
 
 		await Promise
 			.all(promises)
+			.catch(() => {
+				notice.hide()
+			})
 
 		setTimeout(() => notice.hide(), 2000)
+
+		if (fetchedData['mergeRequests'].length > 0) {
+			// const mrIids = fetchedData['mergeRequests'].map((mr: any) => mr['iid'])
+			// for (const mrIid of mrIids) {
+			for (const mr of fetchedData['mergeRequests']) {
+				let discussions = await this.getOpenMergeRequestDiscussions(item.sourceInfo, mr['iid'])
+				discussions = discussions.filter((discussion: any) => discussion['individual_note'])
+				console.log(`discussions_${item.sourceInfo.repoSlug}_${mr.iid}______`, discussions)
+			}
+		}
+
+		// console.log('fetchedData______________', fetchedData)
 
 		return fetchedData
 	}
