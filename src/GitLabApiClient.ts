@@ -3,7 +3,6 @@ import { requestUrl, Notice, Plugin, RequestUrlResponse } from 'obsidian'
 import { BaseClass } from './BaseClass'
 import { CacheManager } from './CacheManager'
 import { slugifyString } from './Utils'
-import { GIT_REST_API_COMPONENTS } from './Constants'
 
 interface IPlugin extends Plugin {
 	settings: GitLabToolingPluginSettings;
@@ -151,8 +150,6 @@ export class GitLabApiClient extends BaseClass {
 				console.log(`discussions_${item.sourceInfo.repoSlug}_${mr.iid}______`, discussions)
 			}
 		}
-
-		// console.log('fetchedData______________', fetchedData)
 
 		return fetchedData
 	}
