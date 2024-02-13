@@ -1,26 +1,25 @@
 class ThemeChangeObserverClass {
 	#observer
+	#listeners = []
 
 	constructor() {
 		this.#observer = new MutationObserver((mutations: MutationRecord[]): void => {
 			mutations.forEach((mutation: MutationRecord) => {
-				const element: Node = mutation.target
-				if (!(element instanceof HTMLElement)) {
-					return
-				}
-
-				if (this.#isThemeChange(mutation.oldValue, 'theme-dark', 'theme-light')) {
-					console.log('Theme changed: dark -> light')
-				} else if (this.#isThemeChange(mutation.oldValue, 'theme-light', 'theme-dark')) {
-					console.log('Theme changed: light -> dark')
+				if (this.#isThemeChange(mutation)) {
+					const newTheme: string = this.getCurrentTheme()
+					console.log(`Observer: Theme changed to ${newTheme}`)
+					this.#notifyListeners(newTheme)
 				}
 			})
 		})
 	}
 
-	#isThemeChange(oldValue: any, fromTheme: any, toTheme: any): string {
-		const target: HTMLElement = document.body
-		return oldValue?.includes(fromTheme) && !oldValue?.includes(toTheme) && target.classList.contains(toTheme)
+	#isThemeChange(mutation: any) {
+		const element = mutation.target
+		return element instanceof HTMLElement && (
+			(mutation.oldValue?.includes('theme-dark') && document.body.classList.contains('theme-light')) ||
+			(mutation.oldValue?.includes('theme-light') && document.body.classList.contains('theme-dark'))
+		)
 	}
 
 	attach(): void {
@@ -38,11 +37,29 @@ class ThemeChangeObserverClass {
 	getCurrentTheme(): string {
 		const classList: DOMTokenList = document.body.classList
 		if (classList.contains('theme-dark')) {
-			return 'dark'
+			return 'dark-mode'
 		} else if (classList.contains('theme-light')) {
-			return 'light'
+			return 'light-mode'
 		}
-		return 'light'
+		return 'light-mode'
+	}
+
+	addListener(listener: any): void {
+		// @ts-ignore
+		this.#listeners.push(listener)
+	}
+
+	removeListener(listener: any): void {
+		// @ts-ignore
+		const index = this.#listeners.indexOf(listener)
+		if (index > -1) {
+			this.#listeners.splice(index, 1)
+		}
+	}
+
+	#notifyListeners(newTheme: any): void {
+		// @ts-ignore
+		this.#listeners.forEach(listener => listener(newTheme))
 	}
 }
 
