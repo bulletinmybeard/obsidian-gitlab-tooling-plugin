@@ -62,7 +62,7 @@ export default {
 			}, [])
 		}
 
-		await dom.createInfoBlocks(container, [
+		await dom.createInfoCards(container, [
 			{
 				header: `Git Repository: <a href="${apiData.repo['web_url']}">${apiData.repo.name}</a>`,
 				content: '-> show badges here',
@@ -71,27 +71,27 @@ export default {
 			},
 			{
 				header: 'Open Merge Requests',
-				list: renderContentBlock('mergeRequests', apiData, settings),
+				list: renderContentCard('mergeRequests', apiData, settings),
 				key: 'merge-requests',
 			},
 			{
 				header: `Pipelines`,
-				list: renderContentBlock('pipelines', apiData, settings, { limit: 2 }),
+				list: renderContentCard('pipelines', apiData, settings, { limit: 2 }),
 				key: 'pipelines',
 			},
 			{
 				header: 'Branches',
-				list: renderContentBlock('branches', apiData, settings),
+				list: renderContentCard('branches', apiData, settings),
 				key: 'branches',
 			},
 			{
 				header: 'Releases',
-				list: renderContentBlock('releases', apiData, settings),
+				list: renderContentCard('releases', apiData, settings),
 				key: 'releases',
 			},
 			{
 				header: 'Tags',
-				list: renderContentBlock('tags', apiData, settings),
+				list: renderContentCard('tags', apiData, settings),
 				key: 'tags',
 			},
 		].filter((item: any) => !exclude.includes(item.key)))

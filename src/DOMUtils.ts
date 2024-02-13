@@ -1,7 +1,7 @@
 import { formatDate } from './Utils';
 
 export const createList = (parentElement: any, items: any) => {
-	const ul = createEl('ul', {
+	const ul: HTMLUListElement = createEl('ul', {
 		cls: 'gt-unordered-list',
 		parent: parentElement
 	})
@@ -14,8 +14,8 @@ export const createList = (parentElement: any, items: any) => {
 	})
 }
 
-export const createInfoBlocks = async (container: any, items: any) => {
-	for (let i = 0; i < items.length; i++) {
+export const createInfoCards = async (container: any, items: any) => {
+	for (let i: number = 0; i < items.length; i++) {
 		const item = items[i]
 
 		let cssItem: string[] = ['gt-flex-item']
@@ -50,7 +50,7 @@ export const createInfoBlocks = async (container: any, items: any) => {
 				createList(itemDiv, item.list)
 			}
 		} else if (item?.content) {
-			const content = createEl('div', {
+			const content: HTMLDivElement = createEl('div', {
 				cls: 'gt-flex-item-content',
 				text: item.content,
 				parent: itemDiv

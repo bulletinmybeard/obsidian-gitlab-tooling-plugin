@@ -3,7 +3,7 @@ export const DEFAULT_SETTINGS: GitLabToolingPluginSettings = {
 	gitlabUrl: 'https://gitlab.com',
 	gitlabToken: '',
 	openMergeRequestsOnly: false,
-	displayMode: '',
+	displayMode: 'detailed',
 	enableDebugLogging: true,
 	enableAutoPolling: false,
 	autoPollingInterval: '5m',
@@ -58,7 +58,6 @@ export const CONTENT_BLOCK_MAPPING: any = {
 		additionalFields: [
 			{ title: 'Author', key: 'author.name' },
 			{ title: 'Target Branch', key: 'target_branch' },
-			{ title: 'Assignees', key: 'assignees.length' },
 			{ title: 'Reviewers', key: 'reviewers.length' },
 			{ title: 'Unresolved reviews', key: 'reviewThreads.length' },
 		]
