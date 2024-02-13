@@ -33,38 +33,8 @@ export default {
     async renderGitLabData(item: any, plugin: any, apiData: any): Promise<HTMLElement> {
         const container: HTMLDivElement = createDiv('gt-flex-container')
 
-		const repoSlug = item.sourceInfo.repoSlug
-		const sourceInfo = item.sourceInfo
 		const exclude = item.exclude
-
-		let branches = []
-		let mergeRequests = []
-		let pipelines = []
-
-		let releases = apiData.releases
-		let tags = apiData.tags
-
 		const settings = plugin.settings
-
-		// try {
-		// 	releases = limitArrayItems(apiData.releases)
-		// 		.reduce((acc: any[], release: any) => {
-		// 			let htmlString = `<a href="${release['web_url']}" target="_blank">${release['name']}</a><br>` +
-		// 				`<span>Released at: ${getElapsedTime(release['released_at'])}</span>`
-		//
-		// 			// if (!plugin.settings['compactMode']) {
-		// 			// 	htmlString +=
-		// 			// 		`<span>Status: ${pipeline['status']}</span><br>` +
-		// 			// 		`<span>Sha: ${pipeline['sha']}</span><br>`
-		// 			// }
-		//
-		// 			return acc.concat(htmlString)
-		// 		}, [])
-		// 	// console.log('[pipelines] data', pipelines)
-		// } catch (error) {
-		// 	console.error('[releases] data error', error)
-		// }
-		//
 
 		const renderContentBlock = (block: string, apiData: any, settings: any, options: any = {}) => {
 			options = deepMerge({
@@ -128,7 +98,7 @@ export default {
 			},
 			{
 				header: 'Releases',
-				list: releases,
+				list: renderContentBlock('releases', apiData, settings),
 				key: 'releases',
 			},
 			{

@@ -74,4 +74,15 @@ export const CONTENT_BLOCK_MAPPING: any = {
 			{ title: 'Sha', key: 'sha' },
 		]
 	},
+	releases: {
+		titleKey: 'name',
+		date: {
+			title: 'Released',
+			key: 'released_at',
+		},
+		additionalFields: [
+			{ title: 'Title', key: 'commit.title' },
+			{ title: 'Author', key: 'commit.author_name' },
+		]
+	},
 }
