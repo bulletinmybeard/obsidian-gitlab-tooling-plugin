@@ -50,14 +50,19 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 			{
 				name: 'Display Mode',
 				desc: 'Choose between displaying detailed info cards or compact badges for merge requests and issues',
-				type: 'toggle',
+				type: 'dropdown',
 				settingKey: 'compactInfoCard',
-			},
-			{
-				name: 'Compact View',
-				desc: `Switch to 'Compact View' for a summarized representation, or stay on 'Full Details' for comprehensive information.`,
-				type: 'toggle',
-				settingKey: 'compactMode',
+				placeholder: 'Detailed',
+				options: [
+					{
+						text: 'Detailed',
+						value: 'detailed'
+					},
+					{
+						text: 'Compact',
+						value: 'compact'
+					}
+				],
 			},
 			{
 				name: 'Enable Auto-Polling',
