@@ -15,9 +15,11 @@ interface SettingItem {
 	name?: string;
 	desc?: string;
 	type: string;
+	options?: any[];
 	placeholder?: string;
 	settingKey?: string;
 	dependsOn?: string;
+	disabled?: boolean;
 }
 
 interface EndpointConfig {
