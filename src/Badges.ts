@@ -1,4 +1,5 @@
 import { makeBadge, ValidationError } from 'badge-maker'
+
 import { deepMerge, pick } from './Utils'
 
 const BADGE_FORMAT: any = {
@@ -13,7 +14,10 @@ const BADGE_FORMAT: any = {
  * @param {any} format
  */
 const genSvgString = (format: any) => {
-	return makeBadge(deepMerge(BADGE_FORMAT, pick(format, Object.keys(BADGE_FORMAT))))
+	format = pick(format, Object.keys(BADGE_FORMAT))
+	format.label = format.label.toLowerCase()
+	format.message = format.message.toLowerCase()
+	return makeBadge(deepMerge(BADGE_FORMAT, format))
 }
 
 /**
