@@ -14,63 +14,7 @@ export const createList = (parentElement: any, items: any) => {
 	})
 }
 
-// createListView(content, [
-// ])
-// if (getType(item.content) === 'array') {
-// }
-
-
-// async updateButton(parentEl: HTMLElement) {
-// 	const button: HTMLButtonElement = createEl('button', {
-// 		cls: 'gt-button is-small gt-update-button',
-// 		text: 'Update',
-// 		parent: parentEl,
-// 		title: 'Poll GitLab for updates'
-// 	})
-// 	button.addEventListener('click', function (this: HTMLButtonElement, event: MouseEvent) {
-//
-// 		const originalText = this.textContent
-//
-// 		this.textContent = ''
-// 		this.classList.add('is-loading')
-//
-// 		const loader = createEl('span', { cls: 'loader', parent: this })
-// 		loader.textContent = 'Polling...'
-//
-// 		this.disabled = true
-//
-// 		const fileExplorer = document.querySelector('.nav-files-container')
-// 		if (fileExplorer) {
-// 			fileExplorer.classList.add('disabled-tree-nav')
-// 		}
-//
-// 		setTimeout(() => {
-// 			this.textContent = 'Polling pipelines...'
-// 		}, 1500)
-//
-// 		setTimeout(() => {
-// 			this.textContent = 'Polling open merge requests...'
-// 		}, 1000)
-//
-// 		setTimeout(() => {
-// 			this.textContent = 'Polling merge request discussions...'
-// 		}, 1500)
-//
-// 		setTimeout(() => {
-// 			this.classList.remove('is-loading')
-// 			loader.remove()
-// 			this.textContent = originalText
-// 			this.disabled = false
-//
-// 			if (fileExplorer) {
-// 				fileExplorer.classList.remove('disabled-tree-nav')
-// 			}
-//
-// 		}, 5000)
-// 	})
-// }
-
-export const createListView = async (container: any, items: any) => {
+export const createInfoBlocks = async (container: any, items: any) => {
 	for (let i = 0; i < items.length; i++) {
 		const item = items[i]
 
@@ -80,7 +24,7 @@ export const createListView = async (container: any, items: any) => {
 			cssItem.push('gt-flex-item-clear')
 		}
 
-		const itemDiv = createDiv({
+		const itemDiv: HTMLDivElement = createDiv({
 			cls: cssItem.join(' '),
 			parent: container
 		})
@@ -89,7 +33,7 @@ export const createListView = async (container: any, items: any) => {
 			// await this.updateButton(itemDiv)
 		}
 
-		const header = createEl('div', {
+		const header: HTMLDivElement = createEl('div', {
 			cls: 'gt-flex-item-header',
 			parent: itemDiv
 		})

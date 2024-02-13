@@ -28,6 +28,8 @@ export default {
 				sortDirection: 'asc',
 			}, options)
 
+			// TODO: Put back `sortArray`!
+
 			const data: any[] = limitArrayItems(apiData[block], options.limit)
 
 			const keyPathValue = (data: any, keyPath: string): any => {
@@ -48,7 +50,8 @@ export default {
 				let htmlString = `<a href="${item['web_url']}" target="_blank">${title}</a><br>` +
 					`<span>${blockConfig.date.title}: ${getElapsedTime(date)}</span>`
 
-				if (blockConfig.additionalFields && !settings['compactMode']) {
+				// if (blockConfig.additionalFields && !settings['compactMode']) {
+				if (blockConfig.additionalFields) {
 					blockConfig.additionalFields.forEach((field: any) => {
 						const value = keyPathValue(item, field.key)
 						htmlString += `<br><span>${field.title}: ${value}</span>`
@@ -59,7 +62,7 @@ export default {
 			}, [])
 		}
 
-		await dom.createListView(container, [
+		await dom.createInfoBlocks(container, [
 			{
 				header: `Git Repository: <a href="${apiData.repo['web_url']}">${apiData.repo.name}</a>`,
 				content: '-> show badges here',

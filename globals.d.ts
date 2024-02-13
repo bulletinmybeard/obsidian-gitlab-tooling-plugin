@@ -2,8 +2,7 @@ interface GitLabToolingPluginSettings {
 	gitlabUrl: string;
 	gitlabToken: string;
 	openMergeRequestsOnly: boolean;
-	compactInfoCard: boolean;
-	compactMode: boolean;
+	displayMode: string;
 	enableDebugLogging: boolean;
 	enableAutoPolling: boolean;
 	autoPollingInterval: string;

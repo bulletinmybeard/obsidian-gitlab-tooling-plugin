@@ -51,7 +51,7 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 				name: 'Display Mode',
 				desc: 'Choose between displaying detailed info cards or compact badges for merge requests and issues',
 				type: 'dropdown',
-				settingKey: 'compactInfoCard',
+				settingKey: 'displayMode',
 				placeholder: 'Detailed',
 				options: [
 					{
@@ -96,12 +96,6 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 				placeholder: 'e.g., YYYY-MM-DD',
 				type: 'text',
 				settingKey: 'customDateFormat',
-			},
-			{
-				name: 'Display Assignees',
-				desc: 'Show assignees on merge requests and issues.',
-				type: 'toggle',
-				settingKey: 'displayAssignees',
 			},
 		]
 

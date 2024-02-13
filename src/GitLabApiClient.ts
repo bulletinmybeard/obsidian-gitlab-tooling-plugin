@@ -165,11 +165,9 @@ export class GitLabApiClient extends BaseClass {
 
 		await Promise
 			.all(promises)
-			.catch(() => {
+			.finally(() => {
 				notice.hide()
 			})
-
-		setTimeout(() => notice.hide(), 2000)
 
 		return fetchedData
 	}
