@@ -21,7 +21,7 @@ export default {
 		const exclude = item.exclude
 		const settings = plugin.settings
 
-		const renderContentBlock = (block: string, apiData: any, settings: any, options: any = {}) => {
+		const renderContentCard = (block: string, apiData: any, settings: any, options: any = {}) => {
 			options = deepMerge({
 				limit: 5,
 				sortBy: null,

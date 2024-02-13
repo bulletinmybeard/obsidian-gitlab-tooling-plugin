@@ -1,9 +1,20 @@
+/* Global Styles
+-------------------------------------------------- */
+:root {
+	/* Spacing */
+	--spacing: .85rem;
+}
+
+/* Theme Styles
+-------------------------------------------------- */
 .gitlab-tooling-repo-container.light-mode {
 }
 
 .gitlab-tooling-repo-container.dark-mode {
 }
 
+/* Plugin Container
+-------------------------------------------------- */
 .block-language-gitlab-tooling {
 	position: relative;
 	border-radius: .25rem;
@@ -13,56 +24,41 @@
 	margin-bottom: 1rem;
 }
 
-.gt-update-button {
-	position: absolute;
-	top: .85rem;
-	right: .85rem;
-	width: 4rem;
-	cursor: pointer;
-}
-
-.gt-update-button:hover:enabled {
-	/*background-color: black;*/
-	/*color: white;*/
-}
-
-.gt-update-button:disabled,
-.gt-update-button[disabled] {
-	/*border: 1px solid black;*/
-	/*background-color: grey;*/
-	/*color: white;*/
-	/*padding: 15px;*/
-	/*cursor: not-allowed;*/
-	pointer-events: none;
-}
-
-.disabled-tree-nav {
-	pointer-events: none;
-	opacity: 0.5;
-}
-
-.gt-badges {
-	padding: 1rem 0;
+/* Shield Badges
+-------------------------------------------------- */
+.gt-badge-container {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	gap: var(--spacing); /* Use the spacing variable for gap */
 }
 
 img.gt-badge {
+	width: auto !important;
+	height: 20px;
+	vertical-align: middle;
 	cursor: default !important;
 	opacity: 1 !important;
 	transition: none !important;
+	margin-right: var(--spacing);
+	margin-bottom: var(--spacing);
 }
-img.gt-badge.with-link {
+
+img.gt-badge:last-child {
+	margin-right: 0;
+}
+
+a.gt-badge-link {
 	cursor: pointer !important;
 }
 
-.gt-badges img.gt-badge {
-	margin-right: .75rem;
-}
-
-.gt-badge-link {
+a.gt-badge-link img.gt-badge {
 	cursor: pointer !important;
 }
 
-/* Flexbox Stuff Ping */
+/* Flexbox Grid Layout
+-------------------------------------------------- */
 /*.gt-flex-container {*/
 /*	display: flex;*/
 /*	flex-wrap: wrap;*/
@@ -103,12 +99,10 @@ img.gt-badge.with-link {
 /*	font-size: 1rem;*/
 /*	flex-grow: 1;*/
 /*}*/
-
-/* Masonry Layout Test */
 .gt-flex-container {
 	display: grid;
-	gap: .85rem;
-	padding: .755rem;
+	gap: var(--spacing);
+	padding: var(--spacing);
 	/*grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));*/
 	grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
 	grid-auto-flow: dense;
@@ -116,7 +110,7 @@ img.gt-badge.with-link {
 
 .gt-flex-item {
 	background-color: #202124;
-	padding: 10px;
+	padding: var(--spacing);
 	border-radius: .3rem;
 	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 	display: flex;
@@ -144,8 +138,9 @@ img.gt-badge.with-link {
 	font-size: 1rem;
 	flex-grow: 1;
 }
-/* Flexbox Stuff Pong */
 
+/* Components
+-------------------------------------------------- */
 ul.gt-unordered-list {
 	margin: 0;
 	padding: 0;
@@ -154,7 +149,7 @@ ul.gt-unordered-list {
 
 ul.gt-unordered-list li {
 	font-size: .9rem;
-	margin-bottom: .65rem;
+	margin-bottom: var(--spacing);
 	padding: .55rem !important;
 	background-color: #2F2F2F96;
 	transition: background-color 0.2s ease-in-out;
@@ -176,3 +171,37 @@ ul.gt-unordered-list li:last-child {
 ul.gt-unordered-list li span {
 	font-size: .75rem;
 }
+
+.gt-update-button {
+	position: absolute;
+	top: .85rem;
+	right: .85rem;
+	width: 4rem;
+	cursor: pointer;
+}
+
+.gt-update-button:hover:enabled {
+	/*background-color: black;*/
+	/*color: white;*/
+}
+
+.gt-update-button:disabled,
+.gt-update-button[disabled] {
+	/*border: 1px solid black;*/
+	/*background-color: grey;*/
+	/*color: white;*/
+	/*padding: 15px;*/
+	/*cursor: not-allowed;*/
+	pointer-events: none;
+}
+
+.disabled-tree-nav {
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+/* Utilities
+-------------------------------------------------- */
+
+/* Responsive Design
+-------------------------------------------------- */

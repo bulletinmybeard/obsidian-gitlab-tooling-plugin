@@ -232,8 +232,8 @@ export const parseMarkdownBlock = (plugin: any, source: string): any => {
  * @return {any}
  */
 export const pick = (obj: any, keys: string[]): any => {
-	return keys.reduce((acc: any, key: string) => {
-		if (key in obj) {
+	return Object.keys(obj).reduce((acc: any, key: string) => {
+		if (keys.includes(key)) {
 			acc[key] = obj[key]
 		}
 		return acc
@@ -246,8 +246,8 @@ export const pick = (obj: any, keys: string[]): any => {
  * @return {any}
  */
 export const omit = (obj: any, keys: string[]): any => {
-	return keys.reduce((acc: any, key: string) => {
-		if (!(key in obj)) {
+	return Object.keys(obj).reduce((acc: any, key: string) => {
+		if (!keys.includes(key)) {
 			acc[key] = obj[key]
 		}
 		return acc
