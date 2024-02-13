@@ -103,7 +103,6 @@ a.gt-badge-link img.gt-badge {
 	display: grid;
 	gap: var(--spacing);
 	padding: var(--spacing);
-	/*grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));*/
 	grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
 	grid-auto-flow: dense;
 }
