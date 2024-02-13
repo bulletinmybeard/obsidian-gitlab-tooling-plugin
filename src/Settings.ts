@@ -85,7 +85,7 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 			},
 			{
 				name: 'Maximum Display Items',
-				desc: 'Limit the number of items (merge requests, issues) displayed at once.',
+				desc: 'Limit the number of items (merge requests, issues, etc.) displayed at once.',
 				placeholder: 'e.g., 10',
 				type: 'text',
 				settingKey: 'maxDisplayItems',
@@ -126,7 +126,6 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 					comp.setDisabled(setting.disabled)
 				}
 				if ('addOption' in comp && setting.type === 'dropdown' && setting?.options) {
-					comp.addOption('defaultValue', 'Default Value')
 					for (const option of setting.options) {
 						comp.addOption(option.value, option.text)
 					}
@@ -153,7 +152,6 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 	}
 
 	/**
-	 * Adds a setting instance to the settings container.
 	 * @return {void}
 	 */
 	addSettings(): void {
