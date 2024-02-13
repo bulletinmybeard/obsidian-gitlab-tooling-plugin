@@ -30,11 +30,48 @@ export const EXCLUDE_REGEX: RegExp = /exclude:\s*([^\n]+)/
 export const VALID_EXCLUDES: string[] = [
 	'pipelines',
 	'merge-requests',
-	'branches'
+	'branches',
+	'releases',
+	'tags',
 ]
 
-export const GIT_REST_API_COMPONENTS: any = {
-	PIPELINES: 'pipelines',
-	MERGE_REQUESTS: 'merge-requests',
-	BRANCHES: 'branches',
+export const CONTENT_BLOCK_MAPPING: any = {
+	branches: {
+		titleKey: 'name',
+		date: {
+			title: 'Last update',
+			key: 'commit.committed_date',
+		}
+	},
+	tags: {
+		titleKey: 'name',
+		date: {
+			title: 'Created',
+			key: 'commit.created_at',
+		}
+	},
+	mergeRequests: {
+		titleKey: 'title',
+		date: {
+			title: 'Last update',
+			key: 'updated_at',
+		},
+		additionalFields: [
+			{ title: 'Author', key: 'author.name' },
+			{ title: 'Target Branch', key: 'target_branch' },
+			{ title: 'Assignees', key: 'assignees.length' },
+			{ title: 'Reviewers', key: 'reviewers.length' },
+		]
+	},
+	pipelines: {
+		titleKey: 'ref',
+		date: {
+			title: 'Pipeline ran',
+			key: 'updated_at',
+		},
+		additionalFields: [
+			{ title: 'Status', key: 'status' },
+			{ title: 'Sha', key: 'sha' },
+		]
+	},
 }

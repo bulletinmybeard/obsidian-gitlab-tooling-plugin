@@ -1,7 +1,8 @@
 import { ObsidianApp } from '../main'
 
-import { sortArray, formatDate, limitArrayItems, getElapsedTime } from '../Utils'
+import { sortArray, formatDate, deepMerge, limitArrayItems, getElapsedTime } from '../Utils'
 import * as dom from '../DOMUtils'
+import { CONTENT_BLOCK_MAPPING } from '../Constants'
 import { createBadgeImage } from '../Badges'
 
 export default {
@@ -22,23 +23,11 @@ export default {
     },
 
     renderContainer(children: HTMLElement[]): HTMLElement {
-        const container = createDiv({ cls: 'gitlab-tooling-repo-container' })
+        const container: HTMLDivElement = createDiv({ cls: 'gitlab-tooling-repo-container' })
         for (const child of children) {
             container.appendChild(child)
         }
         return container
-    },
-
-    renderError(el: HTMLElement, message: string, searchView: any): void {
-        const tagsRow = createDiv('gt-tags has-addons')
-        createSpan({ cls: 'gt-tag is-delete is-danger', parent: tagsRow })
-        if (searchView) {
-            createSpan({ cls: `gt-tag is-danger ${this.getTheme()}`, text: "Search error", parent: tagsRow })
-        } else {
-            createSpan({ cls: `gt-tag is-danger ${this.getTheme()}`, text: "Search error", parent: tagsRow })
-        }
-        createSpan({ cls: 'ji-tag is-danger', text: message, parent: tagsRow })
-        el.replaceChildren(this.renderContainer([tagsRow]))
     },
 
     async renderGitLabData(item: any, plugin: any, apiData: any): Promise<HTMLElement> {
@@ -48,113 +37,72 @@ export default {
 		const sourceInfo = item.sourceInfo
 		const exclude = item.exclude
 
-		// const processData = (apiData: any, type: any) => {
-		// 	const data = limitArrayItems(apiData[type], 10)
-		// 	const sortedData = sortArray(data, type === 'branches' ? 'commit.committed_date' : 'updated_at')
-		//
-		// 	return sortedData.reduce((acc, item) => {
-		// 		if ((type === 'branches' && !item.merged) ||
-		// 			(type === 'mergeRequests' && item.state === 'opened') ||
-		// 			type === 'pipelines') {
-		//
-		// 			let htmlString = `<a href="${item.web_url}" target="_blank">${type === 'branches' ? item.name : item.ref || item.title}</a><br>` +
-		// 				`<span>Last update: ${timeAgo(type === 'branches' ? item.commit.committed_date : item.updated_at)}</span>`
-		//
-		// 			if (!plugin.settings['compactMode'] && type !== 'branches') {
-		// 				htmlString += type === 'mergeRequests'
-		// 					? `<span>Author: ${item.author.name}</span><br>` +
-		// 					`<span>Target Branch: ${item.target_branch}</span><br>` +
-		// 					`<span>Assignees: ${item.assignees.length}</span><br>` +
-		// 					`<span>Reviewers: ${item.reviewers.length}</span><br>`
-		// 					: `<span>Status: ${item.status}</span><br>` +
-		// 					`<span>Sha: ${item.sha}</span><br>`
-		// 			}
-		//
-		// 			acc.push(htmlString)
-		// 		}
-		// 		return acc
-		// 	}, [])
-		// }
-
 		let branches = []
 		let mergeRequests = []
 		let pipelines = []
 
-		try {
-			branches = sortArray(limitArrayItems(apiData.branches), 'commit.committed_date')
-				.reduce((acc: any[], branch: any) => {
-					if (!branch['merged']) {
-						acc.push(
-							`<a href="${branch['web_url']}" target="_blank">${branch.name}</a><br>` +
-							`<span>Last update: ${getElapsedTime(branch['commit']['committed_date'])}</span>`
-						)
-					}
-					return acc;
-				}, [])
-			// console.log('[pipelines] data', branches)
-		} catch (error) {
-			console.error('[branches] data error', error)
-		}
+		let releases = apiData.releases
+		let tags = apiData.tags
 
-		try {
-			mergeRequests = sortArray(limitArrayItems(apiData.mergeRequests), 'updated_at')
-				.reduce((acc: any[], mr: any) => {
-					if (mr.state === 'opened') {
-						let htmlString = `<a href="${mr['web_url']}" target="_blank">${mr.title}</a><br>` +
-							`<span>Last update: ${getElapsedTime(mr['updated_at'])}</span>`
-
-						if (!plugin.settings['compactMode']) {
-							htmlString += `<span>Author: ${mr['author']['name']}</span><br>` +
-								`<span>Target Branch: ${mr['target_branch']}</span><br>` +
-								`<span>Assignees: ${mr['assignees'].length}</span><br>` +
-								`<span>Reviewers: ${mr['reviewers'].length}</span><br>`
-						}
-
-						acc.push(htmlString)
-					}
-					return acc;
-				}, [])
-			// console.log('[pipelines] data', mergeRequests)
-		} catch (error) {
-			console.error('[mergeRequests] data error', error)
-		}
-
-		try {
-			pipelines = sortArray(limitArrayItems(apiData.pipelines), 'updated_at')
-				.reduce((acc: any[], pipeline: any) => {
-					let htmlString = `<a href="${pipeline['web_url']}" target="_blank">${pipeline['ref']}</a><br>` +
-						`<span>Pipeline ran: ${getElapsedTime(pipeline['updated_at'])}</span>`
-
-					if (!plugin.settings['compactMode']) {
-						htmlString +=
-							`<span>Status: ${pipeline['status']}</span><br>` +
-							`<span>Sha: ${pipeline['sha']}</span><br>`
-					}
-
-					return acc.concat(htmlString)
-				}, [])
-			// console.log('[pipelines] data', pipelines)
-		} catch (error) {
-			console.error('[pipelines] data error', error)
-		}
+		const settings = plugin.settings
 
 		// try {
-		// 	branches = processData(apiData, 'branches');
+		// 	releases = limitArrayItems(apiData.releases)
+		// 		.reduce((acc: any[], release: any) => {
+		// 			let htmlString = `<a href="${release['web_url']}" target="_blank">${release['name']}</a><br>` +
+		// 				`<span>Released at: ${getElapsedTime(release['released_at'])}</span>`
+		//
+		// 			// if (!plugin.settings['compactMode']) {
+		// 			// 	htmlString +=
+		// 			// 		`<span>Status: ${pipeline['status']}</span><br>` +
+		// 			// 		`<span>Sha: ${pipeline['sha']}</span><br>`
+		// 			// }
+		//
+		// 			return acc.concat(htmlString)
+		// 		}, [])
+		// 	// console.log('[pipelines] data', pipelines)
 		// } catch (error) {
-		// 	console.error('[branches] data error', error);
+		// 	console.error('[releases] data error', error)
 		// }
 		//
-		// try {
-		// 	mergeRequests = processData(apiData, 'mergeRequests');
-		// } catch (error) {
-		// 	console.error('[mergeRequests] data error', error);
-		// }
-		//
-		// try {
-		// 	pipelines = processData(apiData, 'pipelines');
-		// } catch (error) {
-		// 	console.error('[pipelines] data error', error);
-		// }
+
+		const renderContentBlock = (block: string, apiData: any, settings: any, options: any = {}) => {
+			options = deepMerge({
+				limit: 5,
+				sortBy: null,
+				sortDirection: 'asc',
+			}, options)
+
+			const data: any[] = limitArrayItems(apiData[block], options.limit)
+
+			const keyPathValue = (data: any, keyPath: string): any => {
+				return keyPath
+					.split('.')
+					.reduce((acc, key) => acc[key], data)
+			}
+
+			const blockConfig = CONTENT_BLOCK_MAPPING?.[block]
+			if (!blockConfig) {
+				return []
+			}
+
+			return data.reduce((acc: string[], item: any) => {
+				const title = keyPathValue(item, blockConfig?.titleKey)
+				const date = keyPathValue(item, blockConfig?.date?.key)
+
+				let htmlString = `<a href="${item['web_url']}" target="_blank">${title}</a><br>` +
+					`<span>${blockConfig.date.title}: ${getElapsedTime(date)}</span>`
+
+				if (blockConfig.additionalFields && !settings['compactMode']) {
+					blockConfig.additionalFields.forEach((field: any) => {
+						const value = keyPathValue(item, field.key)
+						htmlString += `<br><span>${field.title}: ${value}</span>`
+					})
+				}
+
+				return acc.concat(htmlString)
+			}, [])
+		}
 
 		await dom.createListView(container, [
 			{
@@ -165,18 +113,28 @@ export default {
 			},
 			{
 				header: 'Open Merge Requests',
-				list: mergeRequests,
+				list: renderContentBlock('mergeRequests', apiData, settings),
 				key: 'merge-requests',
 			},
 			{
-				header: 'Pipelines',
-				list: pipelines,
+				header: `Pipelines`,
+				list: renderContentBlock('pipelines', apiData, settings, { limit: 2 }),
 				key: 'pipelines',
 			},
 			{
 				header: 'Branches',
-				list: branches,
+				list: renderContentBlock('branches', apiData, settings),
 				key: 'branches',
+			},
+			{
+				header: 'Releases',
+				list: releases,
+				key: 'releases',
+			},
+			{
+				header: 'Tags',
+				list: renderContentBlock('tags', apiData, settings),
+				key: 'tags',
 			},
 		].filter((item: any) => !exclude.includes(item.key)))
 
