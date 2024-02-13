@@ -102,7 +102,6 @@ export class GitLabApiClient extends BaseClass {
 			repo: {},
 			branches: [],
 			mergeRequests: [],
-			mergeRequestDiscussions: [],
 			pipelines: [],
 			releases: [],
 			tags: [],
@@ -118,7 +117,38 @@ export class GitLabApiClient extends BaseClass {
 		}
 
 		if (!item.exclude.includes('merge-requests')) {
-			promises.push(this.getOpenMergeRequests(item.sourceInfo).then(data => fetchedData['mergeRequests'] = data))
+			promises.push(
+				this
+					.getOpenMergeRequests(item.sourceInfo)
+					.then(async (data) => {
+						if (data.length > 0) {
+							return fetchedData['mergeRequests'] = await Promise
+								.all(data.map(async (mr: any): Promise<any> => {
+									/**
+									 * TODO: Add settings option to exclude those sub-requests
+									 *
+									 * Merge requests can have open and unresolved review threads
+									 * that are being filtered out of the available discussions.
+									 */
+									const authorId = mr['author']['id']
+									mr.reviewThreads = await this.getOpenMergeRequestDiscussions(item.sourceInfo, mr['iid'])
+										.then((discussions: any) => {
+											return discussions.reduce((acc: any, discussion: any) => {
+												for (const note of discussion['notes']) {
+													if (note['resolvable']
+														&& !note['resolved']
+														&& note['author']['id'] !== authorId) {
+														acc.push(note)
+													}
+												}
+												return acc
+											}, [])
+										})
+									return mr
+								}))
+						}
+						return []
+					}))
 		}
 
 		if (!item.exclude.includes('branches')) {
@@ -140,16 +170,6 @@ export class GitLabApiClient extends BaseClass {
 			})
 
 		setTimeout(() => notice.hide(), 2000)
-
-		if (fetchedData['mergeRequests'].length > 0) {
-			// const mrIids = fetchedData['mergeRequests'].map((mr: any) => mr['iid'])
-			// for (const mrIid of mrIids) {
-			for (const mr of fetchedData['mergeRequests']) {
-				let discussions = await this.getOpenMergeRequestDiscussions(item.sourceInfo, mr['iid'])
-				discussions = discussions.filter((discussion: any) => discussion['individual_note'])
-				console.log(`discussions_${item.sourceInfo.repoSlug}_${mr.iid}______`, discussions)
-			}
-		}
 
 		return fetchedData
 	}
