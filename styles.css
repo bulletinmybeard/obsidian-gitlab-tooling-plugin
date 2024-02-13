@@ -148,9 +148,14 @@ ul.gt-unordered-list {
 
 ul.gt-unordered-list li {
 	font-size: .9rem;
-	background-color: #2F2F2F96;
 	margin-bottom: .65rem;
 	padding: .55rem !important;
+	background-color: #2F2F2F96;
+	transition: background-color 0.2s ease-in-out;
+}
+
+ul.gt-unordered-list li:hover {
+	background-color: #363E44;
 }
 
 ul.gt-unordered-list li:first-child {
