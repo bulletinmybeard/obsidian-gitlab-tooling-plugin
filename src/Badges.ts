@@ -15,8 +15,8 @@ const BADGE_FORMAT: any = {
  */
 const genSvgString = (format: any) => {
 	format = pick(format, Object.keys(BADGE_FORMAT))
-	format.label = format.label.toLowerCase()
-	format.message = format.message.toLowerCase()
+	format.label = `${format.label}`.toLowerCase()
+	format.message = `${format.message}`.toLowerCase()
 	return makeBadge(deepMerge(BADGE_FORMAT, format))
 }
 
@@ -46,6 +46,24 @@ export const createBadgeImage = (format: any, containerEl: any): any => {
 			},
 			parent: containerEl
 		})
+	} catch (err) {
+		if (err instanceof ValidationError) {
+			console.error('Badge Validation error:', err.message);
+		} else {
+			console.error('Badge Unexpected error:', err);
+		}
+	}
+}
+
+export const createBadgeImageGroup = (badges: any[], containerEl: any): any => {
+	try {
+		const badgeContainer = createDiv({
+			cls: '.gt-badge-container',
+			parent: containerEl
+		})
+		for (const badge of badges) {
+			createBadgeImage(badge, badgeContainer)
+		}
 	} catch (err) {
 		if (err instanceof ValidationError) {
 			console.error('Badge Validation error:', err.message);
