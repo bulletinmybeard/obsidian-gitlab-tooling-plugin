@@ -4,7 +4,7 @@ import { DEFAULT_SETTINGS } from './Constants'
 import { GitLabToolingRenderer } from './Renderers/GitLabToolingRenderer'
 import { deepMerge } from './Utils'
 import { GitlabToolingSettingTab } from './Settings'
-import { ThemeChangeObserver as themeObserver } from './ThemeObserver'
+import { ThemeChangeObserver } from './ThemeObserver'
 
 export let ObsidianApp: App | null = null
 
@@ -14,6 +14,9 @@ export default class GitLabToolingPlugin extends Plugin {
 
 	async onload() {
 		ObsidianApp = this.app
+
+		this.themeObserver = ThemeChangeObserver
+		this.themeObserver.attach()
 
 		this.settings = deepMerge(DEFAULT_SETTINGS, await this.loadData())
 
@@ -26,6 +29,7 @@ export default class GitLabToolingPlugin extends Plugin {
 
 	onunload() {
 		this.settings = DEFAULT_SETTINGS
+		this.themeObserver.detach()
 	}
 
 	async saveSettings() {
