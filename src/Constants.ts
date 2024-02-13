@@ -60,6 +60,7 @@ export const CONTENT_BLOCK_MAPPING: any = {
 			{ title: 'Target Branch', key: 'target_branch' },
 			{ title: 'Assignees', key: 'assignees.length' },
 			{ title: 'Reviewers', key: 'reviewers.length' },
+			{ title: 'Unresolved reviews', key: 'reviewThreads.length' },
 		]
 	},
 	pipelines: {
