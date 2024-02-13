@@ -1,4 +1,4 @@
-import { ObsidianApp } from '../main'
+import { ObsidianApp, ThemeObserver } from '../main'
 
 import { sortArray, formatDate, deepMerge, limitArrayItems, getElapsedTime } from '../Utils'
 import * as dom from '../DOMUtils'
@@ -7,23 +7,8 @@ import { createBadgeImage } from '../Badges'
 
 export default {
 
-    getTheme(): string {
-		// @ts-ignore
-		const obsidianTheme = (ObsidianApp.vault as any).getConfig('theme')
-		if (obsidianTheme === 'obsidian') {
-			return 'is-dark'
-		} else if (obsidianTheme === 'system') {
-			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				return 'is-dark'
-			} else {
-				return 'is-light'
-			}
-		}
-        return 'is-dark'
-    },
-
     renderContainer(children: HTMLElement[]): HTMLElement {
-        const container: HTMLDivElement = createDiv({ cls: 'gitlab-tooling-repo-container' })
+        const container: HTMLDivElement = createDiv({ cls: `gitlab-tooling-repo-container ${ThemeObserver.getCurrentTheme()}` })
         for (const child of children) {
             container.appendChild(child)
         }

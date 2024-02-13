@@ -64,3 +64,9 @@ class ThemeChangeObserverClass {
 }
 
 export const ThemeChangeObserver = new ThemeChangeObserverClass()
+
+// Listener example:
+// ThemeObserver.addListener((newTheme: string) => {
+// 	console.log(`Theme updated to: ${newTheme}`);
+// 	...
+// })

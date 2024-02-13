@@ -1,4 +1,5 @@
 import { MarkdownPostProcessorContext } from 'obsidian'
+import { ThemeObserver } from '../main'
 
 import RC from './renderingCommon'
 
@@ -39,4 +40,9 @@ export const GitLabToolingRenderer = async (
 	}
 
 	await updateRenderComponents(el, renderedItems)
+	ThemeObserver.addListener(async (newTheme: string) => {
+		console.log(`Theme updated to: ${newTheme}`);
+		// TODO: Only replace the class instead of rerendering the components!
+		await updateRenderComponents(el, renderedItems)
+	})
 }

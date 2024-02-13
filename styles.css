@@ -1,3 +1,9 @@
+.gitlab-tooling-repo-container.light-mode {
+}
+
+.gitlab-tooling-repo-container.dark-mode {
+}
+
 .block-language-gitlab-tooling {
 	position: relative;
 	border-radius: .25rem;
