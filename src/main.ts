@@ -4,11 +4,13 @@ import { DEFAULT_SETTINGS } from './Constants'
 import { GitLabToolingRenderer } from './Renderers/GitLabToolingRenderer'
 import { deepMerge } from './Utils'
 import { GitlabToolingSettingTab } from './Settings'
+import { ThemeChangeObserver as themeObserver } from './ThemeObserver'
 
 export let ObsidianApp: App | null = null
 
 export default class GitLabToolingPlugin extends Plugin {
 	settings: GitLabToolingPluginSettings
+	themeObserver: any
 
 	async onload() {
 		ObsidianApp = this.app
