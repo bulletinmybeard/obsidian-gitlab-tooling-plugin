@@ -71,7 +71,7 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 						this.plugin.settings[setting.settingKey] = value
 						await this.plugin.saveSettings()
 						/**
-						 * Only
+						 * Only reload the Plugin Settings tab if dependencies were found
 						 */
 						if (setting?.dependsOn
 							|| (!setting?.dependsOn
