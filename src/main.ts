@@ -23,8 +23,16 @@ export default class GitLabToolingPlugin extends Plugin {
 
 		this.addSettingTab(new GitlabToolingSettingTab(this.app, this))
 
-		this.registerMarkdownCodeBlockProcessor('gitlab-tooling', (source: string, el: HTMLElement, ctx: any) => {
-			GitLabToolingRenderer(source, el, ctx, this)
+		this.registerMarkdownCodeBlockProcessor('gitlab-tooling', async (source: string, el: HTMLElement, ctx: any) => {
+			try {
+				await GitLabToolingRenderer(source, el, ctx, this);
+			} catch (error) {
+				console.error("Error processing GitLab tooling:", error.message)
+				const errorDiv = el.createEl('div', {
+					cls: 'gt-flex-container',
+				})
+				errorDiv.innerHTML = `Error loading GitLab data: ${error.message}`
+			}
 		})
 	}
 

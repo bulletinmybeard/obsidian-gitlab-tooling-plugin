@@ -19,18 +19,7 @@ export class GitLabApiClient extends BaseClass {
 	}
 
 	private async request(sourceInfo: any, endpoint: string = '', method: string = 'GET'): Promise<any> {
-
-		const url = `${sourceInfo.apiRepoUrl}/${endpoint}`
-		const cacheKey = slugifyString(url)
-
-		// TODO: Refactor request payload cache!!!
-		if (this.plugin.settings.cacheRestApiResponses) {
-			const requestCacheItem = this.cache.get(cacheKey)
-			if (requestCacheItem) {
-				return requestCacheItem
-			}
-		}
-
+		const url: string = `${sourceInfo.apiRepoUrl}/${endpoint}`
 		try {
 			const response: RequestUrlResponse = await requestUrl({
 				url,
@@ -41,22 +30,17 @@ export class GitLabApiClient extends BaseClass {
 				},
 			})
 
-			if (response.status !== 200) {
-				// TODO: Handle errors properly...
-				throw new Error(response.text)
+			if (response.status === 200) {
+				return response.json
+			} else {
+				throw new Error(`Request failed with status: ${response.status}`)
 			}
-
-			if (this.plugin.settings.cacheRestApiResponses) {
-				this.cache.set(cacheKey, response.json)
-			}
-
-			return response.json
 		} catch (err) {
-			const message = err.message.includes('ERR_NAME_NOT_RESOLVED')
-				? 'The host is offline or the domain name cannot be resolved.'
-				: `An error occurred with the request: ${err.message}`
-			console.error(message)
-			throw err
+			if (err instanceof Error && err.message.includes('ERR_NAME_NOT_RESOLVED')) {
+				throw new Error('The host is offline or the domain name cannot be resolved.')
+			} else {
+				throw new Error('An error occurred while fetching data from GitLab.')
+			}
 		}
 	}
 
