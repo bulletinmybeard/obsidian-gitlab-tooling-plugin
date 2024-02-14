@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from 'obsidian'
 
 import { capitalizeFirstLetter, getType } from './Utils'
-import { PLUGIN_SETTINGS } from './Constants'
+import {DEFAULT_SETTINGS, PLUGIN_SETTINGS} from './Constants'
 
 export class GitlabToolingSettingTab extends PluginSettingTab {
 	plugin: any
@@ -52,24 +52,28 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 					comp.setPlaceholder(setting.placeholder)
 				}
 				if ('setValue' in comp) {
-					comp.setValue(this.plugin.settings[setting?.settingKey])
+					if (setting?.defaultValue) {
+						comp.setValue(setting.defaultValue)
+					} else {
+						comp.setValue(this.plugin.settings[setting?.settingKey])
+					}
 				}
 				if ('onChange' in comp) {
 					const debouncedSave = this.debounceInput(async (value: any) => {
-						if (`${value}`.length > 0
+						if (setting.type === 'text'
 							&& setting?.validationPattern
 							&& !new RegExp(setting.validationPattern, 'g').test(value)) {
 							if (`${value}`.length > 0) {
-								component.settingEl.setAttribute('data-setting', setting.settingKey)
 								console.log(`[${setting.name}] Validation error ${setting.settingKey}`, value)
 								component.settingEl.classList.add('validation-error')
 								return
 							}
 						}
 						component.settingEl.classList.remove('validation-error')
-						console.log(`[${setting.name}] ${setting.settingKey}`, value)
+						console.log(`[${setting.name}] Store '${setting.settingKey}'`, value)
 						this.plugin.settings[setting.settingKey] = value
 						await this.plugin.saveSettings()
+
 						/**
 						 * Only reload the Plugin Settings tab if dependencies were found
 						 */

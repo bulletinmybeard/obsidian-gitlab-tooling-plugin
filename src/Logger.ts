@@ -1,4 +1,3 @@
-
 export enum LogLevel {
 	None = 0,
 	Error = 1,
@@ -8,7 +7,6 @@ export enum LogLevel {
 }
 
 export class Logger {
-
 	isEnabled: boolean
 	logLevel: LogLevel
 
