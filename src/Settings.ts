@@ -56,7 +56,6 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 				}
 				if ('onChange' in comp) {
 					const debouncedSave = this.debounceInput(async (value: any) => {
-
 						if (`${value}`.length > 0
 							&& setting?.validationPattern
 							&& !new RegExp(setting.validationPattern, 'g').test(value)) {
@@ -67,13 +66,18 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 								return
 							}
 						}
-
+						component.settingEl.classList.remove('validation-error')
 						console.log(`[${setting.name}] ${setting.settingKey}`, value)
 						this.plugin.settings[setting.settingKey] = value
 						await this.plugin.saveSettings()
-						component.settingEl.classList.remove('validation-error')
-
-						if (setting?.dependsOn) {
+						/**
+						 * Only
+						 */
+						if (setting?.dependsOn
+							|| (!setting?.dependsOn
+								&& PLUGIN_SETTINGS.find((set: any) =>
+									(set?.dependsOn
+										&& set.dependsOn === setting.settingKey)))) {
 							this.display()
 						}
 					}, this.inputDebounceTimeoutMs)
