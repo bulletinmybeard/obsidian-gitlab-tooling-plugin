@@ -204,3 +204,11 @@ ul.gt-unordered-list li span {
 
 /* Responsive Design
 -------------------------------------------------- */
+
+/* Plugin Settings
+-------------------------------------------------- */
+.setting-item {}
+.setting-item.validation-error .setting-item-control input {
+	border-color: red;
+	background-color: #ff000012
+}

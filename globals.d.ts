@@ -7,6 +7,7 @@ interface GitLabToolingPluginSettings {
 	enableAutoPolling: boolean;
 	autoPollingInterval: string;
 	cacheRestApiResponses: boolean;
+	customDateFormat: string;
 	gitlabApiUrl: () => string
 }
 

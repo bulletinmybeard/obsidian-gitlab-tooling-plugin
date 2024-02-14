@@ -8,6 +8,7 @@ export const DEFAULT_SETTINGS: GitLabToolingPluginSettings = {
 	enableAutoPolling: false,
 	autoPollingInterval: '5m',
 	cacheRestApiResponses: false,
+	customDateFormat: '',
 	gitlabApiUrl(): string {
 		return `${this.gitlabUrl}/api/v4`
 	}
@@ -85,3 +86,84 @@ export const CONTENT_BLOCK_MAPPING: any = {
 		]
 	},
 }
+
+export const PLUGIN_SETTINGS: any = [
+	{
+		name: 'GitLab Host URL',
+		desc: `Specify the URL of your GitLab instance if you're using a self-hosted version. Default is GitLab.com.`,
+		type: 'text',
+		placeholder: 'https://gitlab.com',
+		settingKey: 'gitlabUrl',
+		validationPattern: '^https?:\/\/[^ "]+$',
+	},
+	{
+		name: 'Personal Access Token',
+		desc: 'Enter your GitLab Personal Access Token for authentication. Required for accessing private projects or for increased rate limits.',
+		type: 'text',
+		placeholder: 'Your Personal Access Token',
+		settingKey: 'gitlabToken',
+		validationPattern: '^[a-zA-Z0-9_-]+$',
+	},
+	{
+		name: 'Custom API Headers',
+		desc: 'Define custom headers for API requests for advanced use cases.',
+		placeholder: 'e.g., X-Custom-Header: Value',
+		type: 'text',
+		settingKey: 'customApiHeaders',
+	},
+	{
+		name: 'Only pull Open Merge Requests',
+		desc: 'Enable to only include open merge requests in the fetched data.',
+		type: 'toggle',
+		settingKey: 'openMergeRequestsOnly',
+	},
+	{
+		name: 'Display Mode',
+		desc: 'Choose between displaying detailed info cards or compact badges for merge requests and issues',
+		type: 'dropdown',
+		settingKey: 'displayMode',
+		placeholder: 'Detailed',
+		options: [
+			{
+				text: 'Detailed',
+				value: 'detailed'
+			},
+			{
+				text: 'Compact',
+				value: 'compact'
+			},
+			{
+				text: 'Compact (Badges only)',
+				value: 'compact-badges'
+			}
+		],
+	},
+	{
+		name: 'Enable Auto-Polling',
+		desc: `Automatically poll GitLab for updates at specified intervals. Helps keep data up-to-date without manual refresh.`,
+		type: 'toggle',
+		settingKey: 'enableDebugLogging',
+	},
+	{
+		name: 'Cache API Responses',
+		desc: 'Enable caching of GitLab API responses to minimize rate limiting issues and improve performance.',
+		type: 'toggle',
+		settingKey: 'cacheRestApiResponses',
+	},
+	{
+		name: 'Maximum Display Items',
+		desc: 'Limit the number of items (merge requests, issues, etc.) displayed at once.',
+		placeholder: 'e.g., 10',
+		type: 'text',
+		settingKey: 'maxDisplayItems',
+		validationPattern: '^[0-9]{1,2}$',
+	},
+	{
+		name: 'Custom Date Format',
+		desc: 'Specify the date format used for displaying dates within the plugin.',
+		placeholder: 'e.g., YYYY-MM-DD',
+		type: 'text',
+		settingKey: 'customDateFormat',
+		validationPattern: '[a-zA-Z0-9\\/\\-.]{1,15}$',
+	},
+]

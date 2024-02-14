@@ -1,4 +1,4 @@
-import { ObsidianApp, ThemeObserver } from '../main'
+import { ThemeObserver } from '../main'
 
 import { sortArray, formatDate, deepMerge, limitArrayItems, getElapsedTime } from '../Utils'
 import * as dom from '../DOMUtils'
