@@ -75,7 +75,7 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 						 */
 						if (setting?.dependsOn
 							|| (!setting?.dependsOn
-								&& PLUGIN_SETTINGS.find((set: any) =>
+								&& this.settingsArray.find((set: any) =>
 									(set?.dependsOn
 										&& set.dependsOn === setting.settingKey)))) {
 							this.display()
