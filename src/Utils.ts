@@ -23,6 +23,10 @@ export const getType = (value: any): string | undefined => {
 	return
 }
 
+export const isType = (value: any, expectedType: string): boolean => {
+	return getType(value) === expectedType
+}
+
 /**
  * Deep merge two or more objects.
  * @param {any} target

@@ -131,17 +131,33 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 					comp.setValue(this.plugin.settings[setting?.settingKey])
 				}
 				if ('onChange' in comp) {
-					comp.onChange(async (value: any) => {
+					const debouncedSave = this.debounceInput(async (value: any) => {
 						console.log(`[${setting.name}] ${setting.settingKey}`, value)
 						this.plugin.settings[setting.settingKey] = value
 						await this.plugin.saveSettings()
 						this.display()
+					}, 750)
+
+					comp.onChange((value: any) => {
+						debouncedSave(value)
 					})
 				}
 			})
 			component.settingEl.setAttribute('data-setting', setting.settingKey)
 		} else {
 			console.error(`Unsupported setting type: ${setting.type}`)
+		}
+	}
+
+	debounceInput(func: any, wait: any) {
+		let timeout: any
+		return (...args: any[]) => {
+			const later = () => {
+				clearTimeout(timeout)
+				func(...args)
+			}
+			clearTimeout(timeout)
+			timeout = setTimeout(later, wait)
 		}
 	}
 
