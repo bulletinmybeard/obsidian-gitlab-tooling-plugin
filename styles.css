@@ -122,6 +122,12 @@ a.gt-badge-link img.gt-badge {
 	padding: 0;
 }
 
+.gt-flex-item-error {
+	color: red;
+	font-size: .85rem;
+	padding: var(--spacing);
+}
+
 .gt-flex-item-full-width {
 	/*grid-column: span 2;*/
 	grid-column: 1 / -1 !important;

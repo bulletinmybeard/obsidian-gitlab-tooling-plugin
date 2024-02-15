@@ -27,10 +27,10 @@ export const GitLabToolingRenderer = async (
 	plugin: any,
 ): Promise<void> => {
 
-	const apiClient = new GitLabApiClient(plugin)
-
 	const renderedItems: Record<string, HTMLElement> = {}
 	const item = parseMarkdownBlock(plugin, source)
+
+	const apiClient = new GitLabApiClient(plugin, item)
 
 	if (item?.sourceInfo && !Object.isEmpty(item.sourceInfo)) {
 		const apiData = await apiClient.fetchGitLabData(item)

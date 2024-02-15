@@ -1,4 +1,4 @@
-import { formatDate } from './Utils';
+import { createBadgeImageGroup } from './Badges'
 
 export const createList = (parentElement: any, items: any) => {
 	const ul: HTMLUListElement = createEl('ul', {
@@ -24,6 +24,10 @@ export const createInfoCards = async (container: any, items: any) => {
 			cssItem.push('gt-flex-item-clear')
 		}
 
+		if (errors?.[item.key]) {
+			cssItem.push('gt-flex-item-error')
+		}
+
 		const itemDiv: HTMLDivElement = createDiv({
 			cls: cssItem.join(' '),
 			parent: container
@@ -37,24 +41,35 @@ export const createInfoCards = async (container: any, items: any) => {
 			cls: 'gt-flex-item-header',
 			parent: itemDiv
 		})
+
 		header.innerHTML = item.header
 
-		if (item?.list) {
-			if (item.list.length === 0) {
-				const content: HTMLDivElement = createEl('div', {
-					cls: 'gt-flex-item-content',
-					text: 'No items to display.',
-					parent: itemDiv
-				})
-			} else {
-				createList(itemDiv, item.list)
-			}
-		} else if (item?.content) {
+		if (errors?.[item.key]) {
 			const content: HTMLDivElement = createEl('div', {
 				cls: 'gt-flex-item-content',
-				text: item.content,
+				text: errors[item.key],
 				parent: itemDiv
 			})
+		} else {
+			if (item?.list) {
+				if (item.list.length === 0) {
+					const content: HTMLDivElement = createEl('div', {
+						cls: 'gt-flex-item-content',
+						text: 'No items to display.',
+						parent: itemDiv
+					})
+				} else {
+					createList(itemDiv, item.list)
+				}
+			} else if (item?.content) {
+				const content: HTMLDivElement = createEl('div', {
+					cls: 'gt-flex-item-content',
+					text: item.content,
+					parent: itemDiv
+				})
+			} else if (item?.badges) {
+				createBadgeImageGroup(item.badges, itemDiv)
+			}
 		}
 	}
 }

@@ -3,7 +3,6 @@ import { ThemeObserver } from '../main'
 import { sortArray, formatDate, deepMerge, limitArrayItems, getElapsedTime } from '../Utils'
 import * as dom from '../DOMUtils'
 import { CONTENT_BLOCK_MAPPING } from '../Constants'
-import { createBadgeImage } from '../Badges'
 
 export default {
 
@@ -15,13 +14,16 @@ export default {
         return container
     },
 
-    async renderGitLabData(item: any, plugin: any, apiData: any): Promise<HTMLElement> {
+    async renderGitLabData(item: any, plugin: any, data: any): Promise<HTMLElement> {
         const container: HTMLDivElement = createDiv('gt-flex-container')
 
 		const exclude = item.exclude
 		const settings = plugin.settings
 
-		const renderContentCard = (block: string, apiData: any, settings: any, options: any = {}) => {
+		const apiData = data.promises
+		const errors = data.errors
+
+		const renderContentCard = (card: string, apiData: any, settings: any, options: any = {}) => {
 			options = deepMerge({
 				limit: 5,
 				sortBy: null,
@@ -30,7 +32,7 @@ export default {
 
 			// TODO: Put back `sortArray`!
 
-			const data: any[] = limitArrayItems(apiData[block], options.limit)
+			const data: any[] = limitArrayItems(apiData[card], options.limit)
 
 			const keyPathValue = (data: any, keyPath: string): any => {
 				return keyPath
@@ -38,21 +40,21 @@ export default {
 					.reduce((acc, key) => acc[key], data)
 			}
 
-			const blockConfig = CONTENT_BLOCK_MAPPING?.[block]
-			if (!blockConfig) {
+			const cardConfig = CONTENT_BLOCK_MAPPING?.[card]
+			if (!cardConfig) {
 				return []
 			}
 
 			return data.reduce((acc: string[], item: any) => {
-				const title = keyPathValue(item, blockConfig?.titleKey)
-				const date = keyPathValue(item, blockConfig?.date?.key)
+				const title = keyPathValue(item, cardConfig?.titleKey)
+				const date = keyPathValue(item, cardConfig?.date?.key)
 
 				let htmlString = `<a href="${item['web_url']}" target="_blank">${title}</a><br>` +
-					`<span>${blockConfig.date.title}: ${getElapsedTime(date)}</span>`
+					`<span>${cardConfig.date.title}: ${getElapsedTime(date)}</span>`
 
 				// if (blockConfig.additionalFields && !settings['compactMode']) {
-				if (blockConfig.additionalFields) {
-					blockConfig.additionalFields.forEach((field: any) => {
+				if (cardConfig.additionalFields) {
+					cardConfig.additionalFields.forEach((field: any) => {
 						const value = keyPathValue(item, field.key)
 						htmlString += `<br><span>${field.title}: ${value}</span>`
 					})
@@ -62,17 +64,19 @@ export default {
 			}, [])
 		}
 
-		await dom.createInfoCards(container, [
+		await dom.createInfoCards(container, errors, [
 			{
-				header: `Git Repository: <a href="${apiData.repo['web_url']}">${apiData.repo.name}</a>`,
+				header: `Git Repository: <a href="${apiData.repo['web_url']}" title="${apiData.repo.name}">${apiData.repo.name}</a>`,
+				// TODO: Check whether content is an HTML element and not a string!!
 				content: '-> show badges here',
+				// badges,
 				isHeaderBlock: true,
 				key: 'header',
 			},
 			{
 				header: 'Open Merge Requests',
-				list: renderContentCard('mergeRequests', apiData, settings),
-				key: 'merge-requests',
+				list: renderContentCard('mergeRequests', apiData, errors, settings),
+				key: 'mergeRequests',
 			},
 			{
 				header: `Pipelines`,
