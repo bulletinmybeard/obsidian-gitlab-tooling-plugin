@@ -90,14 +90,13 @@ export const PLUGIN_SETTINGS: any = [
 		validationPattern: '^[a-zA-Z0-9_-]+$',
 		defaultValue: '',
 	},
-	// {
-	// 	name: 'Custom API Headers',
-	// 	desc: 'Define custom headers for API requests for advanced use cases.',
-	// 	placeholder: 'e.g., X-Custom-Header: Value',
-	// 	type: 'text',
-	// 	settingKey: 'customApiHeaders',
-	// 	defaultValue: '',
-	// },
+	{
+		name: 'Cache API Responses',
+		desc: 'Enable caching of GitLab API responses to minimize rate limiting issues and improve performance.',
+		type: 'toggle',
+		settingKey: 'cacheRestApiResponses',
+		defaultValue: false,
+	},
 	{
 		name: 'Only pull Open Merge Requests',
 		desc: 'Enable to only include open merge requests in the fetched data.',
@@ -128,20 +127,6 @@ export const PLUGIN_SETTINGS: any = [
 		defaultValue: 'detailed',
 	},
 	{
-		name: 'Enable Auto-Polling',
-		desc: `Automatically poll GitLab for updates at specified intervals. Helps keep data up-to-date without manual refresh.`,
-		type: 'toggle',
-		settingKey: 'enableDebugLogging',
-		defaultValue: true,
-	},
-	{
-		name: 'Cache API Responses',
-		desc: 'Enable caching of GitLab API responses to minimize rate limiting issues and improve performance.',
-		type: 'toggle',
-		settingKey: 'cacheRestApiResponses',
-		defaultValue: false,
-	},
-	{
 		name: 'Maximum Display Items',
 		desc: 'Limit the number of items (merge requests, issues, etc.) displayed at once.',
 		placeholder: 'e.g., 10',
@@ -149,15 +134,6 @@ export const PLUGIN_SETTINGS: any = [
 		settingKey: 'maxDisplayItems',
 		validationPattern: '^(1?[0-9]|20)$',
 		defaultValue: 10,
-	},
-	{
-		name: 'Custom Date Format',
-		desc: 'Specify the date format used for displaying dates within the plugin.',
-		placeholder: 'e.g., YYYY-MM-DD',
-		type: 'text',
-		settingKey: 'customDateFormat',
-		// validationPattern: '[a-zA-Z0-9\\/\\-.]{1,15}$',
-		defaultValue: 'YYYY-MM-DD',
 	},
 ]
 
