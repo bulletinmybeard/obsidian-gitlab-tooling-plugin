@@ -2,7 +2,13 @@
 -------------------------------------------------- */
 :root {
 	/* Spacing */
-	--spacing: .85rem;
+	--spacing: .65rem;
+
+	/* Border Radius */
+	--border-radius: .3rem;
+
+	/* Box Shadows */
+	--box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Theme Styles
@@ -110,8 +116,8 @@ a.gt-badge-link img.gt-badge {
 .gt-flex-item {
 	background-color: #202124;
 	padding: var(--spacing);
-	border-radius: .3rem;
-	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	border-radius: var(--border-radius);
+	box-shadow: var(--box-shadow);
 	display: flex;
 	flex-direction: column;
 }
@@ -129,7 +135,6 @@ a.gt-badge-link img.gt-badge {
 }
 
 .gt-flex-item-full-width {
-	/*grid-column: span 2;*/
 	grid-column: 1 / -1 !important;
 }
 
@@ -165,12 +170,16 @@ ul.gt-unordered-list li:hover {
 }
 
 ul.gt-unordered-list li:first-child {
-	border-radius: .3rem .3rem 0 0;
+	border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 ul.gt-unordered-list li:last-child {
-	border-radius: 0 0 .3rem .3rem;
+	border-radius: 0 0 var(--border-radius) var(--border-radius);
 	margin-bottom: 0;
+}
+
+ul.gt-unordered-list li:only-child {
+	border-radius: var(--border-radius);
 }
 
 ul.gt-unordered-list li span {
