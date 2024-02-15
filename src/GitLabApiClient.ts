@@ -70,23 +70,33 @@ export class GitLabApiClient extends BaseClass {
 		}
 	}
 
+	requestWrapper(key: string, promise: any) {
+		return promise
+			.then((data: any) => ({ success: true, key, data }))
+			.catch((error: any) => {
+				let errorMessage = error.message
+				if (errorMessage.includes('ERR_NAME_NOT_RESOLVED')) {
+					errorMessage = 'Host not reachable'
+				}
+				return { success: false, key, error: errorMessage }
+			})
+	}
+
 	async getProjectPipelines(): Promise<any> {
 		return this.request('pipelines')
 	}
 
-	async retryProjectPipeline(pipelineId: number): Promise<any> {
-		return this.request(`pipelines/${pipelineId}/retry`, 'POST')
-	}
-
 	async getOpenMergeRequests(): Promise<any> {
+		const endpoint = `merge_requests${this.plugin.settings.openMergeRequestsOnly ? '?state=opened' : ''}`;
 		return this
-			.request('merge_requests?state=opened')
+			.request(endpoint)
 			.then((data: any) =>
 				this.processMergeRequestDiscussions(data))
 	}
 
 	async getOpenMergeRequestDiscussions(mergeRequestIID: number): Promise<any> {
-		return this.request(`merge_requests/${mergeRequestIID}/discussions?order_by=updated_at`)
+		const endpoint = `merge_requests/${mergeRequestIID}/discussions?order_by=updated_at`
+		return this.request(endpoint)
 	}
 
 	async processMergeRequestDiscussions(data: any): Promise<any> {
@@ -122,7 +132,7 @@ export class GitLabApiClient extends BaseClass {
 	}
 
 	async getBranches(): Promise<any> {
-		return this.request(`repository/branches?order_by=updated_at`)
+		return this.request('repository/branches?order_by=updated_at')
 	}
 
 	async getReleases(): Promise<any> {
@@ -133,30 +143,25 @@ export class GitLabApiClient extends BaseClass {
 		return this.request('repository/tags')
 	}
 
-	async getMetadata(): Promise<any> {
-		return this.request('metadata')
-	}
-
 	async fetchGitLabData(item: { sourceInfo: any, exclude: string[] }): Promise<any> {
 
-		// // TODO: Replace error message when cached data is being returned!
+		// TODO: Replace error message when cached data is being returned!
 		const notice: Notice = new Notice(
 			`Retrieving data for '${item.sourceInfo.repoSlug}' from GitLab`, 0)
 
-		let repo: any
-		try {
-			repo = await this.getProjectDetails()
-		} catch (err) {
-			throw err
-		}
+		/**
+		 * `getProjectDetails` is being called outside `Promise.all`
+		 * and used to test the connection to GitLab.
+		 */
+		const repo = await this.getProjectDetails()
 
 		return Promise
 			.all([
-				this.wrapRequest('branches', this.getBranches()),
-				this.wrapRequest('mergeRequests', this.getOpenMergeRequests()),
-				this.wrapRequest('releases', this.getReleases()),
-				this.wrapRequest('tags', this.getRepositoryTags()),
-				this.wrapRequest('pipelines', this.getProjectPipelines()),
+				this.requestWrapper('branches', this.getBranches()),
+				this.requestWrapper('mergeRequests', this.getOpenMergeRequests()),
+				this.requestWrapper('releases', this.getReleases()),
+				this.requestWrapper('tags', this.getRepositoryTags()),
+				this.requestWrapper('pipelines', this.getProjectPipelines()),
 			])
 			.then((responses: any) => {
 				const errors: any = {}
