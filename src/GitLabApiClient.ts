@@ -23,6 +23,15 @@ export class GitLabApiClient extends BaseClass {
 	private async request(endpoint: string = '', method: string = 'GET'): Promise<any> {
 		const url: string = `${this.item.sourceInfo.apiRepoUrl}/${endpoint}`
 		try {
+			const cacheKey = slugifyString(url)
+
+			// TODO: Refactor request payload cache!!!
+			if (this.plugin.settings.cacheRestApiResponses) {
+				const requestCacheItem = this.cache.get(cacheKey)
+				if (requestCacheItem) {
+					return requestCacheItem
+				}
+			}
 			const response: RequestUrlResponse = await requestUrl({
 				url,
 				method,
@@ -33,6 +42,9 @@ export class GitLabApiClient extends BaseClass {
 				throw: false,
 			})
 			if (response.status === 200) {
+				if (this.plugin.settings.cacheRestApiResponses) {
+					this.cache.set(cacheKey, response.json)
+				}
 				return response.json
 			} else {
 				throw new Error(`Request '${url}' failed with status: ${response.status}`)
