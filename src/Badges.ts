@@ -1,8 +1,13 @@
-import { makeBadge, ValidationError } from 'badge-maker'
+import { makeBadge, ValidationError, Format } from 'badge-maker'
 
 import { deepMerge, pick } from './Utils'
 
-const BADGE_FORMAT: any = {
+interface CustomBadgeFormat extends Format {
+	link?: string;
+	alt?: string;
+}
+
+const BADGE_FORMAT: CustomBadgeFormat = {
 	label: 'build',
 	message: 'passed',
 	style: 'flat',
@@ -11,9 +16,14 @@ const BADGE_FORMAT: any = {
 }
 
 /**
- * @param {any} format
+ * Generates an SVG string for a badge based on the provided format.
+ * The format can include any properties to override the default badge format.
+ * Properties not specified will use default values.
+ *
+ * @param {CustomBadgeFormat} format The format object to customize the badge.
+ * @returns {string} The generated SVG string for the badge.
  */
-const genSvgString = (format: any) => {
+const genSvgString = (format: AnyObject): string => {
 	format = pick(format, Object.keys(BADGE_FORMAT))
 	format.label = `${format.label}`.toLowerCase()
 	format.message = `${format.message}`.toLowerCase()
@@ -21,10 +31,14 @@ const genSvgString = (format: any) => {
 }
 
 /**
- * @param {any} format
- * @param {any} containerEl
+ * Creates a badge image element and appends it to a specified container element.
+ * If a link is provided in the format, the badge will be wrapped in an anchor (<a>) element.
+ *
+ * @param {CustomBadgeFormat} format The format object to customize the badge, can include a link.
+ * @param {any} containerEl The container element to append the badge image to.
+ * @returns {HTMLImageElement|undefined} The badge image element.
  */
-export const createBadgeImage = (format: any, containerEl: any): any => {
+export const createBadgeImage = (format: CustomBadgeFormat, containerEl: HTMLElement): HTMLImageElement | undefined => {
 	try {
 		if (format?.link) {
 			containerEl = createEl('a', {
@@ -55,7 +69,13 @@ export const createBadgeImage = (format: any, containerEl: any): any => {
 	}
 }
 
-export const createBadgeImageGroup = (badges: any[], containerEl: any): any => {
+/**
+ * Creates a group of badge images based on an array of formats and appends them to a specified container.
+ * @param {CustomBadgeFormat[]} badges An array of format objects to customize each badge in the group.
+ * @param {HTMLElement} containerEl The container element to append the badge images to.
+ * @returns {void}
+ */
+export const createBadgeImageGroup = (badges: CustomBadgeFormat[], containerEl: HTMLElement): void => {
 	try {
 		const badgeContainer = createDiv({
 			cls: '.gt-badge-container',

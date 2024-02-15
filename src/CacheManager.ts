@@ -8,6 +8,7 @@ import { convertToSeconds } from './Utils'
 export class CacheManager extends BaseClass {
 	app: App
 	cacheExpirationMs: number
+	cacheExpirationDefault: string = '1d' // Defaults to one day
 	cacheDirectory: string
 	pluginId: string
 
@@ -25,7 +26,7 @@ export class CacheManager extends BaseClass {
 
 		// @ts-ignore
 		this.cacheDirectory = `${this.app.vault.adapter.basePath}/.obsidian/plugins/${this.pluginId}/cache/`
-		this.cacheExpirationMs = convertToSeconds(cacheExpiration ?? '1d') // Defaults to one day
+		this.cacheExpirationMs = convertToSeconds(cacheExpiration ?? this.cacheExpirationDefault)
 
 		this.ensureDirectoryExists()
 	}
@@ -33,10 +34,10 @@ export class CacheManager extends BaseClass {
 	/**
 	 * Saves a value to the cache.
 	 * @param {string} cacheKey
-	 * @param {any} data
-	 * @return {void}
+	 * @param {AnyObject} data
+	 * @returns {void}
 	 */
-	set(cacheKey: string, data: any): void {
+	set(cacheKey: string, data: AnyObject): void {
 		const cacheEntry = { data, timestamp: Date.now() }
 		try {
 			fs.writeFileSync(this.cachePath(cacheKey), JSON.stringify(cacheEntry), { encoding: 'utf-8' })
@@ -48,9 +49,9 @@ export class CacheManager extends BaseClass {
 	/**
 	 * Retrieves a value from the cache.
 	 * @param {string} cacheKey
-	 * @return {any}
+	 * @returns {AnyObject|null}
 	 */
-	get(cacheKey: string): any {
+	get(cacheKey: string): AnyObject|null {
 		try {
 			const cacheEntry = JSON.parse(fs.readFileSync(this.cachePath(cacheKey), { encoding: 'utf-8' }))
 			return this.isCacheValid(
@@ -66,7 +67,7 @@ export class CacheManager extends BaseClass {
 	/**
      * Removes a value from the cache.
      * @param {string} cacheKey
-	 * @return {void}
+	 * @returns {void}
      */
 	remove(cacheKey: string): void {
 		try {
@@ -78,6 +79,7 @@ export class CacheManager extends BaseClass {
 
 	/**
 	 * Creates the cache directory inside this plugin directory.
+	 * @returns {void}
 	 */
 	ensureDirectoryExists(): void {
 		if (!(fs.existsSync(this.cacheDirectory))) {
@@ -93,38 +95,25 @@ export class CacheManager extends BaseClass {
 	}
 
 	/**
-	 * Removes all cached items from the cache directory.
-	 * @return {Promise<void>}
-	 */
-	async flush(): Promise<void> {
-		try {
-			// TODO: Refactor all this...
-			const files = await this.app.vault.adapter.list(this.cacheDirectory)
-			if (files && files.files) {
-				for (const filePath of files.files) {
-					await this.app.vault.adapter.remove(filePath)
-				}
-			}
-			this.logger.info(`'${this.pluginId}' cache directory flushed successfully.`)
-		} catch (err) {
-			this.logger.error(`Error flushing '${this.pluginId}' cache directory:`, err)
-		}
-	}
-
-	/**
 	 * Returns true if the cache entry is still valid.
 	 * @param {string} cacheKey
-	 * @return {string}
+	 * @returns {string}
 	 */
 	cachePath(cacheKey: string): string {
 		return path.resolve(this.cacheDirectory, cacheKey)
 	}
 
-	isCacheValid(data: any, timestamp: number): boolean {
+	/**
+	 * Check the expiration date of a cache entry.
+	 * @param {AnyObject} data
+	 * @param {number} timestamp
+	 * @returns {boolean}
+	 */
+	isCacheValid(data: AnyObject, timestamp: number): boolean {
 		if (!data || !timestamp) {
 			return false
 		}
-		const cacheExpirationMs = convertToSeconds('1d') * 1000
+		const cacheExpirationMs = this.cacheExpirationMs * 1000
 		return (Date.now() - timestamp) < cacheExpirationMs
 	}
 }

@@ -32,3 +32,5 @@ interface EndpointParams {
 }
 
 type TimeUnit = 's' | 'm' | 'h' | 'd' | 'w' | 'M' | 'y'
+
+type AnyObject = { [key: string]: any };

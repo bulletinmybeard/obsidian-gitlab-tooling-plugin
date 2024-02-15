@@ -18,7 +18,7 @@ export class Logger {
 	/**
 	 * Determine if the log message should be shown.
 	 * @param {LogLevel} level
-	 * @return {boolean}
+	 * @returns {boolean}
 	 * @private
 	 */
 	private shouldLog(level: LogLevel): boolean {
@@ -29,7 +29,7 @@ export class Logger {
      * Log an error message.
      * @param {...any[]} messages
 	 * @param {LogLevel} level
-	 * @return {void}
+	 * @returns {void}
      */
 	log(level: LogLevel, ...messages: any[]): void {
 		if (this.shouldLog(level)) {
@@ -53,7 +53,7 @@ export class Logger {
 	/**
 	 * Debug log message.
 	 * @param {...any[]} messages
-	 * @return {void}
+	 * @returns {void}
 	 */
 	debug(...messages: any[]): void {
 		this.log(LogLevel.Debug, ...messages)
@@ -62,7 +62,7 @@ export class Logger {
 	/**
 	 * Debug log message.
 	 * @param {...any[]} messages
-	 * @return {void}
+	 * @returns {void}
 	 */
 	info(...messages: any[]): void {
 		this.log(LogLevel.Info, ...messages)
@@ -71,7 +71,7 @@ export class Logger {
 	/**
 	 * Debug log message.
 	 * @param {...any[]} messages
-	 * @return {void}
+	 * @returns {void}
 	 */
 	warn(...messages: any[]): void {
 		this.log(LogLevel.Warn, ...messages)
@@ -80,7 +80,7 @@ export class Logger {
 	/**
 	 * Debug log message.
 	 * @param {...any[]} messages
-	 * @return {void}
+	 * @returns {void}
 	 */
 	error(...messages: any[]): void {
 		this.log(LogLevel.Error, ...messages)

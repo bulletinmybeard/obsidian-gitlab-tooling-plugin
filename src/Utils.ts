@@ -1,13 +1,9 @@
-import {
-	TIME_UNIT_MAPPING,
-	EXCLUDE_REGEX,
-	VALID_EXCLUDES
-} from './Constants'
+import { TIME_UNIT_MAPPING, EXCLUDE_REGEX, VALID_EXCLUDES } from './Constants'
 
 /**
  * Get the type of the value.
  * @param {any} value
- * @return {string|undefined}
+ * @returns {string|undefined}
  *
  * @examples
  * getType(123) → number
@@ -23,7 +19,12 @@ export const getType = (value: any): string | undefined => {
 	return
 }
 
-export const isType = (value: any, expectedType: string): boolean => {
+/**
+ * @param {AnyObject} value
+ * @param {string} expectedType
+ * @returns {boolean}
+ */
+export const isType = (value: AnyObject, expectedType: string): boolean => {
 	return getType(value) === expectedType
 }
 
@@ -31,7 +32,7 @@ export const isType = (value: any, expectedType: string): boolean => {
  * Deep merge two or more objects.
  * @param {any} target
  * @param {any[]} sources
- * @return {any}
+ * @returns {AnyObject}
  */
 export const deepMerge = (target: any, ...sources: any[]): any => {
 	if (!sources.length) {
@@ -56,7 +57,7 @@ export const deepMerge = (target: any, ...sources: any[]): any => {
 /**
  * Converts a time string to a number of seconds.
  * @param {string} timeString
- * @return {number}
+ * @returns {number}
  *
  * @examples
  * convertToSeconds('10s') → 10
@@ -75,7 +76,7 @@ export const convertToSeconds = (timeString: string): number => {
 /**
  * Converts a host to a regular expression.
  * @param {string} host
- * @return {RegExp}
+ * @returns {RegExp}
  */
 export const hostToRegex = (host: string): RegExp => {
 	const escapedUrl = host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -83,34 +84,19 @@ export const hostToRegex = (host: string): RegExp => {
 }
 
 /**
- * Extracts all URLs from a Note.
- * @param {string} content
- * @param {string} gitlabUrl
- * @param {string} gitlabApiUrl
- */
-export const extractUrls = (content: string, gitlabUrl: string, gitlabApiUrl: string): any[] => {
-	const gitlabUrlRegex = hostToRegex(gitlabUrl)
-	return [...content.matchAll(gitlabUrlRegex)]
-		.map((match: RegExpMatchArray) => {
-			if (getType(match) === 'array' && match.length === 2) {
-				return {
-					full: match[0],
-					path: match[1],
-					apiUrl: `${gitlabApiUrl}/projects/${encodeURIComponent(match[1])}`,
-				}
-			}
-		})
-}
-
-/**
  * Capitalizes the first letter of a string.
  * @param {string} value
- * @return {string}
+ * @returns {string}
  */
 export const capitalizeFirstLetter = (value: string): string => {
 	return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
+/**
+ * Converts a string into a slug.
+ * @param {string} value
+ * @returns {string}
+ */
 export const slugifyString = (value: string): string => {
 	return value
 		// Replace all non-letter characters with '-'
@@ -126,19 +112,23 @@ export const slugifyString = (value: string): string => {
 /**
  * @param {any} plugin
  * @param {string} source
- * @return {any}
+ * @returns {AnyObject|undefined}
  */
-export const validateSourceInput = (plugin: any, source: string): any => {
+export const validateSourceInput = (plugin: any, source: string): AnyObject | undefined => {
 	source = `${source}`.trim()
 
 	if (source.length === 0 || source.length > 200) {
 		return
 	}
 
-	const instanceUrl: string = plugin.settings.gitlabUrl
-	const apiString: string = 'api/v4/projects'
+	const instanceUrl = plugin.settings.gitlabUrl
+	const apiString = 'api/v4/projects'
 
-	const getGroupPath = (url: string) => {
+	/**
+	 * @param {string} url
+	 * @returns {string}
+	 */
+	const getGroupPath = (url: string): string => {
 		try {
 			return new URL(url).pathname.replace(/^\//, '')
 		} catch (err) {
@@ -146,6 +136,10 @@ export const validateSourceInput = (plugin: any, source: string): any => {
 		}
 	}
 
+	/**
+	 * @param {string} url
+	 * @returns {string}
+	 */
 	const normalizeUrl = (url: string) => {
 		try {
 			const parsedUrl = new URL(url)
@@ -155,7 +149,12 @@ export const validateSourceInput = (plugin: any, source: string): any => {
 		}
 	}
 
-	const verifyGitUrl = (instanceUrl: string, gitUrl: string) => {
+	/**
+	 * @param {string} instanceUrl
+	 * @param {string} gitUrl
+	 * @returns {AnyObject|undefined}
+	 */
+	const verifyGitUrl = (instanceUrl: string, gitUrl: string): AnyObject | undefined => {
 		const normalizedInstanceUrl = normalizeUrl(instanceUrl)
 
 		let normalizedGitUrl = normalizeUrl(gitUrl)
@@ -176,22 +175,18 @@ export const validateSourceInput = (plugin: any, source: string): any => {
 				repoSlug: slugifyString(groupPath.split('/').pop() || ''),
 			}
 		}
-
-		return
 	}
-
 	return verifyGitUrl(instanceUrl, source)
 }
 
 /**
  * @param {string} source
- * @return {any[]}
+ * @returns {string[]}
  */
-export const captureExcludes = (source: string): any[] => {
+export const captureExcludes = (source: string): string[] => {
 	const match = source.match(EXCLUDE_REGEX)
 	if (match) {
-		const allItems = match[1]
-		return allItems
+		return match[1]
 			.split(',')
 			.reduce((acc: string[], item: string) => {
 				item = item.trim()
@@ -208,9 +203,9 @@ export const captureExcludes = (source: string): any[] => {
  *
  * @param {any} plugin
  * @param {string} source
- * @return {any}
+ * @returns {AnyObject}
  */
-export const parseMarkdownBlock = (plugin: any, source: string): any => {
+export const parseMarkdownBlock = (plugin: any, source: string): AnyObject => {
 	return source
 		.split('\n')
 		.filter(Boolean)
@@ -231,39 +226,40 @@ export const parseMarkdownBlock = (plugin: any, source: string): any => {
 }
 
 /**
- * @param {any} obj
+ * @param {AnyObject} value
  * @param {string[]} keys
- * @return {any}
+ * @returns {AnyObject}
  */
-export const pick = (obj: any, keys: string[]): any => {
-	return Object.keys(obj).reduce((acc: any, key: string) => {
+export const pick = (value: any, keys: string[]): AnyObject => {
+	return Object.keys(value).reduce((acc: any, key: string) => {
 		if (keys.includes(key)) {
-			acc[key] = obj[key]
+			acc[key] = value[key]
 		}
 		return acc
 	}, {})
 }
 
 /**
- * @param {any} obj
+ * @param {AnyObject} value
  * @param {string[]} keys
- * @return {any}
+ * @returns {AnyObject}
  */
-export const omit = (obj: any, keys: string[]): any => {
-	return Object.keys(obj).reduce((acc: any, key: string) => {
+export const omit = (value: any, keys: string[]): AnyObject => {
+	return Object.keys(value).reduce((acc: any, key: string) => {
 		if (!keys.includes(key)) {
-			acc[key] = obj[key]
+			acc[key] = value[key]
 		}
 		return acc
 	}, {})
 }
 
 /**
- * @param {any[]} array
+ * @param {AnyObject[]} array
  * @param {string} nestedKey
  * @param {string} order
+ * @returns {AnyObject[]}
  */
-export const sortArray = (array: any[], nestedKey: string, order: string = 'desc') => {
+export const sortArray = (array: AnyObject[], nestedKey: string, order: string = 'desc'): AnyObject[] => {
 	return array.sort((a, b) => {
 		const keys = nestedKey.split('.')
 		let aValue = a, bValue = b
@@ -281,6 +277,7 @@ export const sortArray = (array: any[], nestedKey: string, order: string = 'desc
  * @param {string} datetimeString
  * @param {any} formatOptions
  * @param {string} locales
+ * @returns {string}
  */
 export const formatDate = (
 	datetimeString: string,
@@ -305,10 +302,10 @@ export const formatDate = (
 }
 
 /**
- *
  * @param {string} datetimeString
+ * @returns {string}
  */
-export const getElapsedTime = (datetimeString: string) => {
+export const getElapsedTime = (datetimeString: string): string => {
 	const date: any = new Date(datetimeString)
 	const now: any = new Date()
 	const seconds = Math.round((now - date) / 1000)
@@ -336,7 +333,12 @@ export const getElapsedTime = (datetimeString: string) => {
 	}
 }
 
-export const limitArrayItems = (array: any[], limit: number = 5) => {
+/**
+ * @param {any[]} array
+ * @param {number?} limit
+ * @returns {AnyObject[]}
+ */
+export const limitArrayItems = (array: any[], limit: number = 5): AnyObject[] => {
 	if (array.length <= limit) {
 		return array
 	}
