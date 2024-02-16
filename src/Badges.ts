@@ -19,9 +19,6 @@ const BADGE_FORMAT: CustomBadgeFormat = {
  * Generates an SVG string for a badge based on the provided format.
  * The format can include any properties to override the default badge format.
  * Properties not specified will use default values.
- *
- * @param {CustomBadgeFormat} format The format object to customize the badge.
- * @returns {string} The generated SVG string for the badge.
  */
 const genSvgString = (format: AnyObject): string => {
 	format = pick(format, Object.keys(BADGE_FORMAT))
@@ -33,10 +30,6 @@ const genSvgString = (format: AnyObject): string => {
 /**
  * Creates a badge image element and appends it to a specified container element.
  * If a link is provided in the format, the badge will be wrapped in an anchor (<a>) element.
- *
- * @param {CustomBadgeFormat} format The format object to customize the badge, can include a link.
- * @param {any} containerEl The container element to append the badge image to.
- * @returns {HTMLImageElement|undefined} The badge image element.
  */
 export const createBadgeImage = (format: CustomBadgeFormat, containerEl: HTMLElement): HTMLImageElement | undefined => {
 	try {
@@ -71,9 +64,6 @@ export const createBadgeImage = (format: CustomBadgeFormat, containerEl: HTMLEle
 
 /**
  * Creates a group of badge images based on an array of formats and appends them to a specified container.
- * @param {CustomBadgeFormat[]} badges An array of format objects to customize each badge in the group.
- * @param {HTMLElement} containerEl The container element to append the badge images to.
- * @returns {void}
  */
 export const createBadgeImageGroup = (badges: CustomBadgeFormat[], containerEl: HTMLElement): void => {
 	try {

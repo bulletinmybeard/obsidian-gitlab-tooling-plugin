@@ -14,9 +14,6 @@ export class CacheManager extends BaseClass {
 
 	/**
 	 * Initialize the cache manager.
-	 * @param {App} app
-	 * @param {string} pluginId
-	 * @param {string} cacheExpiration
 	 */
 	constructor(app: App, pluginId: string, cacheExpiration?: string) {
 		super()
@@ -33,9 +30,6 @@ export class CacheManager extends BaseClass {
 
 	/**
 	 * Saves a value to the cache.
-	 * @param {string} cacheKey
-	 * @param {AnyObject} data
-	 * @returns {void}
 	 */
 	set(cacheKey: string, data: AnyObject): void {
 		const cacheEntry = { data, timestamp: Date.now() }
@@ -48,10 +42,8 @@ export class CacheManager extends BaseClass {
 
 	/**
 	 * Retrieves a value from the cache.
-	 * @param {string} cacheKey
-	 * @returns {AnyObject|null}
 	 */
-	get(cacheKey: string): AnyObject|null {
+	get(cacheKey: string): AnyObject | null {
 		try {
 			const cacheEntry = JSON.parse(fs.readFileSync(this.cachePath(cacheKey), { encoding: 'utf-8' }))
 			return this.isCacheValid(
@@ -66,8 +58,6 @@ export class CacheManager extends BaseClass {
 
 	/**
      * Removes a value from the cache.
-     * @param {string} cacheKey
-	 * @returns {void}
      */
 	remove(cacheKey: string): void {
 		try {
@@ -79,7 +69,6 @@ export class CacheManager extends BaseClass {
 
 	/**
 	 * Creates the cache directory inside this plugin directory.
-	 * @returns {void}
 	 */
 	ensureDirectoryExists(): void {
 		if (!(fs.existsSync(this.cacheDirectory))) {
@@ -96,8 +85,6 @@ export class CacheManager extends BaseClass {
 
 	/**
 	 * Returns true if the cache entry is still valid.
-	 * @param {string} cacheKey
-	 * @returns {string}
 	 */
 	cachePath(cacheKey: string): string {
 		return path.resolve(this.cacheDirectory, cacheKey)
@@ -105,9 +92,6 @@ export class CacheManager extends BaseClass {
 
 	/**
 	 * Check the expiration date of a cache entry.
-	 * @param {AnyObject} data
-	 * @param {number} timestamp
-	 * @returns {boolean}
 	 */
 	isCacheValid(data: AnyObject, timestamp: number): boolean {
 		if (!data || !timestamp) {

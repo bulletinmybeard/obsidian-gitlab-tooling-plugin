@@ -36,7 +36,7 @@ export default class GitLabToolingPlugin extends Plugin {
 		})
 	}
 
-	onunload() {
+	onunload(): void {
 		this.settings = DEFAULT_SETTINGS
 		ThemeObserver.detach()
 	}

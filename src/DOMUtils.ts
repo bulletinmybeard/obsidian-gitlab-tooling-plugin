@@ -14,7 +14,7 @@ export const createList = (parentElement: any, items: any) => {
 	})
 }
 
-export const createInfoCards = async (container: any, items: any) => {
+export const createInfoCards = async (container: HTMLElement, errors: any[], items: any): Promise<void> => {
 	for (let i: number = 0; i < items.length; i++) {
 		const item = items[i]
 
@@ -45,7 +45,7 @@ export const createInfoCards = async (container: any, items: any) => {
 		header.innerHTML = item.header
 
 		if (errors?.[item.key]) {
-			const content: HTMLDivElement = createEl('div', {
+			createEl('div', {
 				cls: 'gt-flex-item-content',
 				text: errors[item.key],
 				parent: itemDiv
@@ -53,7 +53,7 @@ export const createInfoCards = async (container: any, items: any) => {
 		} else {
 			if (item?.list) {
 				if (item.list.length === 0) {
-					const content: HTMLDivElement = createEl('div', {
+					createEl('div', {
 						cls: 'gt-flex-item-content',
 						text: 'No items to display.',
 						parent: itemDiv
@@ -62,7 +62,7 @@ export const createInfoCards = async (container: any, items: any) => {
 					createList(itemDiv, item.list)
 				}
 			} else if (item?.content) {
-				const content: HTMLDivElement = createEl('div', {
+				createEl('div', {
 					cls: 'gt-flex-item-content',
 					text: item.content,
 					parent: itemDiv

@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from 'obsidian'
 
 import { capitalizeFirstLetter, getType } from './Utils'
-import {DEFAULT_SETTINGS, PLUGIN_SETTINGS} from './Constants'
+import { DEFAULT_SETTINGS, PLUGIN_SETTINGS } from './Constants'
 
 export class GitlabToolingSettingTab extends PluginSettingTab {
 	plugin: any
@@ -13,6 +13,9 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 		this.plugin = plugin
 	}
 
+	/**
+	 * Renders the Settings tab.
+	 */
 	display(): void {
 		const { containerEl } = this
 
@@ -28,8 +31,6 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 
 	/**
 	 * Adds a setting block to the settings page.
-	 * @param {SettingItem} setting
-	 * @return {void}
 	 */
 	addDynamicSetting = (setting: any): void => {
 
@@ -91,13 +92,14 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 					})
 				}
 			})
+			// TODO: Add Button to test the connection to the GitLab API host!
 			component.settingEl.setAttribute('data-setting', setting.settingKey)
 		} else {
 			console.error(`Unsupported setting type: ${setting.type}`)
 		}
 	}
 
-	debounceInput(func: any, wait: any) {
+	debounceInput(func: any, wait: any): any {
 		let timeout: any
 		return (...args: any[]) => {
 			const later = () => {
@@ -109,9 +111,6 @@ export class GitlabToolingSettingTab extends PluginSettingTab {
 		}
 	}
 
-	/**
-	 * @return {void}
-	 */
 	addSettings(): void {
 		this.settingsArray
 			.forEach((setting: SettingItem) => {

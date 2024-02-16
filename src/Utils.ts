@@ -2,8 +2,6 @@ import { TIME_UNIT_MAPPING, EXCLUDE_REGEX, VALID_EXCLUDES } from './Constants'
 
 /**
  * Get the type of the value.
- * @param {any} value
- * @returns {string|undefined}
  *
  * @examples
  * getType(123) → number
@@ -20,9 +18,7 @@ export const getType = (value: any): string | undefined => {
 }
 
 /**
- * @param {AnyObject} value
- * @param {string} expectedType
- * @returns {boolean}
+ * Checks whether the given value is an object, string, array, etc.
  */
 export const isType = (value: AnyObject, expectedType: string): boolean => {
 	return getType(value) === expectedType
@@ -30,9 +26,6 @@ export const isType = (value: AnyObject, expectedType: string): boolean => {
 
 /**
  * Deep merge two or more objects.
- * @param {any} target
- * @param {any[]} sources
- * @returns {AnyObject}
  */
 export const deepMerge = (target: any, ...sources: any[]): any => {
 	if (!sources.length) {
@@ -56,8 +49,6 @@ export const deepMerge = (target: any, ...sources: any[]): any => {
 
 /**
  * Converts a time string to a number of seconds.
- * @param {string} timeString
- * @returns {number}
  *
  * @examples
  * convertToSeconds('10s') → 10
@@ -75,8 +66,6 @@ export const convertToSeconds = (timeString: string): number => {
 
 /**
  * Converts a host to a regular expression.
- * @param {string} host
- * @returns {RegExp}
  */
 export const hostToRegex = (host: string): RegExp => {
 	const escapedUrl = host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -85,8 +74,6 @@ export const hostToRegex = (host: string): RegExp => {
 
 /**
  * Capitalizes the first letter of a string.
- * @param {string} value
- * @returns {string}
  */
 export const capitalizeFirstLetter = (value: string): string => {
 	return value.charAt(0).toUpperCase() + value.slice(1)
@@ -94,8 +81,6 @@ export const capitalizeFirstLetter = (value: string): string => {
 
 /**
  * Converts a string into a slug.
- * @param {string} value
- * @returns {string}
  */
 export const slugifyString = (value: string): string => {
 	return value
@@ -110,9 +95,7 @@ export const slugifyString = (value: string): string => {
 }
 
 /**
- * @param {any} plugin
- * @param {string} source
- * @returns {AnyObject|undefined}
+ * Validate the given source.
  */
 export const validateSourceInput = (plugin: any, source: string): AnyObject | undefined => {
 	source = `${source}`.trim()
@@ -124,10 +107,6 @@ export const validateSourceInput = (plugin: any, source: string): AnyObject | un
 	const instanceUrl = plugin.settings.gitlabUrl
 	const apiString = 'api/v4/projects'
 
-	/**
-	 * @param {string} url
-	 * @returns {string}
-	 */
 	const getGroupPath = (url: string): string => {
 		try {
 			return new URL(url).pathname.replace(/^\//, '')
@@ -136,10 +115,6 @@ export const validateSourceInput = (plugin: any, source: string): AnyObject | un
 		}
 	}
 
-	/**
-	 * @param {string} url
-	 * @returns {string}
-	 */
 	const normalizeUrl = (url: string) => {
 		try {
 			const parsedUrl = new URL(url)
@@ -149,11 +124,6 @@ export const validateSourceInput = (plugin: any, source: string): AnyObject | un
 		}
 	}
 
-	/**
-	 * @param {string} instanceUrl
-	 * @param {string} gitUrl
-	 * @returns {AnyObject|undefined}
-	 */
 	const verifyGitUrl = (instanceUrl: string, gitUrl: string): AnyObject | undefined => {
 		const normalizedInstanceUrl = normalizeUrl(instanceUrl)
 
@@ -179,10 +149,6 @@ export const validateSourceInput = (plugin: any, source: string): AnyObject | un
 	return verifyGitUrl(instanceUrl, source)
 }
 
-/**
- * @param {string} source
- * @returns {string[]}
- */
 export const captureExcludes = (source: string): string[] => {
 	const match = source.match(EXCLUDE_REGEX)
 	if (match) {
@@ -199,12 +165,6 @@ export const captureExcludes = (source: string): string[] => {
 	return []
 }
 
-/**
- *
- * @param {any} plugin
- * @param {string} source
- * @returns {AnyObject}
- */
 export const parseMarkdownBlock = (plugin: any, source: string): AnyObject => {
 	return source
 		.split('\n')
@@ -225,11 +185,6 @@ export const parseMarkdownBlock = (plugin: any, source: string): AnyObject => {
 		})
 }
 
-/**
- * @param {AnyObject} value
- * @param {string[]} keys
- * @returns {AnyObject}
- */
 export const pick = (value: any, keys: string[]): AnyObject => {
 	return Object.keys(value).reduce((acc: any, key: string) => {
 		if (keys.includes(key)) {
@@ -239,11 +194,6 @@ export const pick = (value: any, keys: string[]): AnyObject => {
 	}, {})
 }
 
-/**
- * @param {AnyObject} value
- * @param {string[]} keys
- * @returns {AnyObject}
- */
 export const omit = (value: any, keys: string[]): AnyObject => {
 	return Object.keys(value).reduce((acc: any, key: string) => {
 		if (!keys.includes(key)) {
@@ -253,12 +203,6 @@ export const omit = (value: any, keys: string[]): AnyObject => {
 	}, {})
 }
 
-/**
- * @param {AnyObject[]} array
- * @param {string} nestedKey
- * @param {string} order
- * @returns {AnyObject[]}
- */
 export const sortArray = (array: AnyObject[], nestedKey: string, order: string = 'desc'): AnyObject[] => {
 	return array.sort((a, b) => {
 		const keys = nestedKey.split('.')
@@ -273,12 +217,6 @@ export const sortArray = (array: AnyObject[], nestedKey: string, order: string =
 	})
 }
 
-/**
- * @param {string} datetimeString
- * @param {any} formatOptions
- * @param {string} locales
- * @returns {string}
- */
 export const formatDate = (
 	datetimeString: string,
 	formatOptions: any = {},
@@ -301,10 +239,6 @@ export const formatDate = (
 	}
 }
 
-/**
- * @param {string} datetimeString
- * @returns {string}
- */
 export const getElapsedTime = (datetimeString: string): string => {
 	const date: any = new Date(datetimeString)
 	const now: any = new Date()
@@ -333,11 +267,6 @@ export const getElapsedTime = (datetimeString: string): string => {
 	}
 }
 
-/**
- * @param {any[]} array
- * @param {number?} limit
- * @returns {AnyObject[]}
- */
 export const limitArrayItems = (array: any[], limit: number = 5): AnyObject[] => {
 	if (array.length <= limit) {
 		return array

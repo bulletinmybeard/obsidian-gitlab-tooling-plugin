@@ -14,7 +14,7 @@ class ThemeChangeObserverClass {
 		})
 	}
 
-	#isThemeChange(mutation: any) {
+	#isThemeChange(mutation: any): boolean {
 		const element = mutation.target
 		return element instanceof HTMLElement && (
 			(mutation.oldValue?.includes('theme-dark') && document.body.classList.contains('theme-light')) ||
