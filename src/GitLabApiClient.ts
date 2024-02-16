@@ -185,7 +185,12 @@ export class GitLabApiClient extends BaseClass {
 		 * `getProjectDetails` is being called outside `Promise.all`
 		 * and used to test the connection to GitLab.
 		 */
-		const repo = await this.getProjectDetails()
+		const repo = await this
+			.getProjectDetails()
+			.catch((err: any) => {
+				notice.hide()
+				throw err
+			})
 
 		return Promise
 			.all([
@@ -214,6 +219,9 @@ export class GitLabApiClient extends BaseClass {
 				})
 				notice.hide()
 				return { errors, promises }
+			}).catch((err: any) => {
+				notice.hide()
+				throw err
 			})
 	}
 }

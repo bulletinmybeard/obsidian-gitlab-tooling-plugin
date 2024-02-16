@@ -165,7 +165,7 @@ export const captureExcludes = (source: string): string[] => {
 	return []
 }
 
-export const parseMarkdownBlock = (plugin: any, source: string): AnyObject => {
+export const parseMarkdownBlock = (plugin: any, source: string): any => {
 	return source
 		.split('\n')
 		.filter(Boolean)
